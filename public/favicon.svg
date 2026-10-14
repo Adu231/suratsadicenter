@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="46" fill="#6E2436" stroke="#D1B477" stroke-width="4"/>
+  <path d="M50 18 C34 18 24 32 24 46 C24 64 50 82 50 82 C50 82 76 64 76 46 C76 32 66 18 50 18 Z" fill="none" stroke="#D1B477" stroke-width="3"/>
+  <circle cx="50" cy="44" r="8" fill="#D1B477"/>
+  <text x="50" y="68" font-family="'Playfair Display', serif" font-size="12" font-weight="700" fill="#F8F4ED" text-anchor="middle" letter-spacing="1">SSC</text>
+</svg>
