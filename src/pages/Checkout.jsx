@@ -180,8 +180,8 @@ export const Checkout = () => {
                 <Truck size={18} color="var(--color-primary-maroon)" /> 1. Delivery Details
               </h3>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div className="form-group" style={{ gridColumn: 'span 2' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
+                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                   <label className="form-label">Full Name *</label>
                   <input
                     type="text"
@@ -189,6 +189,7 @@ export const Checkout = () => {
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                     placeholder="Recipient's Name"
+                    autoComplete="name"
                   />
                   {errors.fullName && <span className="form-error">{errors.fullName}</span>}
                 </div>
@@ -197,6 +198,8 @@ export const Checkout = () => {
                   <label className="form-label">Mobile Number *</label>
                   <input
                     type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
                     maxLength={10}
                     className="form-input"
                     value={formData.phone}
@@ -210,6 +213,8 @@ export const Checkout = () => {
                   <label className="form-label">Email (Optional)</label>
                   <input
                     type="email"
+                    inputMode="email"
+                    autoComplete="email"
                     className="form-input"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -221,6 +226,8 @@ export const Checkout = () => {
                   <label className="form-label">Delivery PIN Code *</label>
                   <input
                     type="text"
+                    inputMode="numeric"
+                    autoComplete="postal-code"
                     maxLength={6}
                     className="form-input"
                     value={formData.pincode}

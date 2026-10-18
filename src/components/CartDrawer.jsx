@@ -191,11 +191,7 @@ export const CartDrawer = () => {
                           <Trash2 size={16} />
                         </button>
                       </div>
-                      {item.marathiName && (
-                        <p className="font-devanagari" style={{ fontSize: '0.75rem', color: 'var(--color-primary-maroon)' }}>
-                          {item.marathiName}
-                        </p>
-                      )}
+                      
                       <p style={{ fontSize: '0.75rem', color: 'var(--color-muted-text)', marginTop: '2px' }}>
                         {item.fabric} • {item.colour}
                       </p>

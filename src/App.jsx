@@ -10,6 +10,7 @@ import { Footer } from './components/Footer.jsx';
 import { CartDrawer } from './components/CartDrawer.jsx';
 import { LoginModal } from './components/LoginModal.jsx';
 import { WhatsAppButton } from './components/WhatsAppButton.jsx';
+import { MobileBottomNav } from './components/MobileBottomNav.jsx';
 
 import { Home } from './pages/Home.jsx';
 import { Catalog } from './pages/Catalog.jsx';
@@ -48,6 +49,7 @@ export default function App() {
             <CartDrawer />
             <LoginModal />
             <WhatsAppButton />
+            <MobileBottomNav />
           </div>
         </CartProvider>
       </ProductProvider>

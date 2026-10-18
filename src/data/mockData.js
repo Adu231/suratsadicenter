@@ -5,7 +5,7 @@ export const INITIAL_CATEGORIES = [
   {
     id: 'cat-paithani',
     name: 'Paithani Sarees',
-    marathiName: 'पैठणी साडी',
+    marathiName: 'Paithani Saree',
     slug: 'paithani-sarees',
     description: 'Traditional Maharashtrian pure silk Paithani with exquisite peacock, lotus zari motifs and rich pallu.',
     image: '/saree-paithani.png',
@@ -14,7 +14,7 @@ export const INITIAL_CATEGORIES = [
   {
     id: 'cat-banarasi',
     name: 'Banarasi Silk Sarees',
-    marathiName: 'बनारसी सिल्क साडी',
+    marathiName: 'Banarasi Silk Saree',
     slug: 'banarasi-silk-sarees',
     description: 'Opulent woven Banarasi brocades with royal gold and silver zari artistry from Varanasi.',
     image: '/saree-banarasi.png',
@@ -23,7 +23,7 @@ export const INITIAL_CATEGORIES = [
   {
     id: 'cat-kanjivaram',
     name: 'Kanjivaram Silk Sarees',
-    marathiName: 'कांजीवरम सिल्क साडी',
+    marathiName: 'Kanjivaram Silk Saree',
     slug: 'kanjivaram-silk-sarees',
     description: 'Heavy pure mulberry silk sarees with rich temple borders and contrasting zari pallu.',
     image: '/saree-kanjivaram.png',
@@ -32,7 +32,7 @@ export const INITIAL_CATEGORIES = [
   {
     id: 'cat-chanderi',
     name: 'Chanderi & Cotton Sarees',
-    marathiName: 'चांदेरी व कॉटन साडी',
+    marathiName: 'Chanderi & Cotton Saree',
     slug: 'chanderi-cotton-sarees',
     description: 'Lightweight, sheer, and breathable handloom sarees ideal for summer celebrations.',
     image: '/saree-chanderi.png',
@@ -41,7 +41,7 @@ export const INITIAL_CATEGORIES = [
   {
     id: 'cat-bhagalpuri',
     name: 'Bhagalpuri Tussar Sarees',
-    marathiName: 'भागलपुरी टसर साडी',
+    marathiName: 'Bhagalpuri Tussar Saree',
     slug: 'bhagalpuri-sarees',
     description: 'Natural texture Tussar silk sarees celebrated for resilience and understated rustic charm.',
     image: '/saree-bhagalpuri.png',
@@ -50,7 +50,7 @@ export const INITIAL_CATEGORIES = [
   {
     id: 'cat-bridal',
     name: 'Bridal Heritage Sarees',
-    marathiName: 'वधू साडी संग्रह',
+    marathiName: 'Bridal Saree Collection',
     slug: 'bridal-heritage-sarees',
     description: 'Grand royal trousseau sarees crafted specifically for wedding ceremonies and receptions.',
     image: '/saree-bridal.png',
@@ -62,7 +62,7 @@ export const INITIAL_PRODUCTS = [
   {
     id: 'prod-001',
     name: 'Royal Peacock Border Pure Silk Paithani Saree',
-    marathiName: 'शाही मोर बॉर्डर शुद्ध सिल्क पैठणी साडी',
+    marathiName: 'Royal Peacock Pure Silk Paithani Saree',
     slug: 'royal-peacock-border-pure-silk-paithani-saree',
     sku: 'SSC-PAI-001',
     description: 'Handcrafted pure silk Maharani Paithani featuring the iconic Muniya border, traditional Asavali motifs, and an opulent peacock zari pallu. Comes with matching running blouse piece.',
@@ -92,7 +92,7 @@ export const INITIAL_PRODUCTS = [
   {
     id: 'prod-002',
     name: 'Golden Zari Meenakari Banarasi Silk Saree',
-    marathiName: 'सोनेरी जरी मीनाकारी बनारसी सिल्क साडी',
+    marathiName: 'Golden Zari Meenakari Banarasi Silk Saree',
     slug: 'golden-zari-meenakari-banarasi-silk-saree',
     sku: 'SSC-BAN-002',
     description: 'Exquisite Katan silk Banarasi saree woven with intricate floral jaal and vibrant Meenakari accents. A heritage heirloom piece for grand wedding receptions.',
@@ -122,7 +122,7 @@ export const INITIAL_PRODUCTS = [
   {
     id: 'prod-003',
     name: 'Crimson Temple Border Kanjivaram Silk Saree',
-    marathiName: 'मंदिरी बॉर्डर कांजीवरम सिल्क साडी',
+    marathiName: 'Crimson Temple Border Kanjivaram Silk Saree',
     slug: 'crimson-temple-border-kanjivaram-silk-saree',
     sku: 'SSC-KAN-003',
     description: 'Authentic South Indian Kanchipuram silk saree featuring traditional Korvai temple borders, dense golden zari body checks, and a grand heavy pallu.',
@@ -152,7 +152,7 @@ export const INITIAL_PRODUCTS = [
   {
     id: 'prod-004',
     name: 'Handcrafted Chanderi Zari Buti Festive Saree',
-    marathiName: 'हस्तनिर्मित चांदेरी जरी बुटी साडी',
+    marathiName: 'Handcrafted Chanderi Zari Buti Saree',
     slug: 'handcrafted-chanderi-zari-buti-festive-saree',
     sku: 'SSC-CHA-004',
     description: 'Lightweight and translucent Chanderi silk-cotton saree with delicate hand-woven floral silver butis and a sheer zari border.',
@@ -182,7 +182,7 @@ export const INITIAL_PRODUCTS = [
   {
     id: 'prod-005',
     name: 'Bhagalpuri Tussar Silk Hand-Painted Saree',
-    marathiName: 'भागलपुरी टसर सिल्क हात-रंगवलेली साडी',
+    marathiName: 'Bhagalpuri Tussar Silk Hand-Painted Saree',
     slug: 'bhagalpuri-tussar-silk-hand-painted-saree',
     sku: 'SSC-BHA-005',
     description: 'Naturally textured pure Tussar silk saree featuring Madhubani hand-painted borders and floral motifs on earthy beige base.',
@@ -212,7 +212,7 @@ export const INITIAL_PRODUCTS = [
   {
     id: 'prod-006',
     name: 'Maharani Heritage Red Velvet Bridal Saree',
-    marathiName: 'महाराणी हेरिटेज रेड ब्राईडल साडी',
+    marathiName: 'Maharani Heritage Red Velvet Bridal Saree',
     slug: 'maharani-heritage-red-velvet-bridal-saree',
     sku: 'SSC-BRI-006',
     description: 'A masterpiece created for the royal bride. Intricately embellished with zardozi, dabka, and pearl embroidery over fine pure silk.',
@@ -242,7 +242,7 @@ export const INITIAL_PRODUCTS = [
   {
     id: 'prod-007',
     name: 'Yeola Pure Silk Peshwai Paithani Saree',
-    marathiName: 'येवला शुद्ध सिल्क पेशवाई पैठणी',
+    marathiName: 'Yeola Pure Silk Peshwai Paithani Saree',
     slug: 'yeola-pure-silk-peshwai-paithani-saree',
     sku: 'SSC-PAI-007',
     description: 'Traditional Yeola handloom Paithani adorned with vibrant parrot and mor motifs, finished with gold tissue border and pure zari work.',
@@ -272,7 +272,7 @@ export const INITIAL_PRODUCTS = [
   {
     id: 'prod-008',
     name: 'Varanasi Rose Gold Tanchoi Banarasi Saree',
-    marathiName: 'वाराणसी रोझ गोल्ड तानचोई बनारसी साडी',
+    marathiName: 'Varanasi Rose Gold Tanchoi Banarasi Saree',
     slug: 'varanasi-rose-gold-tanchoi-banarasi-saree',
     sku: 'SSC-BAN-008',
     description: 'Ultra-soft Tanchoi weave Banarasi saree woven with satin base and pastel floral motifs. Glides smoothly for evening celebrations.',
@@ -319,7 +319,7 @@ export const INITIAL_ORDERS = [
       {
         id: 'prod-001',
         name: 'Royal Peacock Border Pure Silk Paithani Saree',
-        marathiName: 'शाही मोर बॉर्डर शुद्ध सिल्क पैठणी साडी',
+        marathiName: 'Royal Peacock Border Pure Silk Paithani Saree',
         sku: 'SSC-PAI-001',
         price: 8999,
         quantity: 1,
@@ -352,7 +352,7 @@ export const INITIAL_ORDERS = [
       {
         id: 'prod-002',
         name: 'Golden Zari Meenakari Banarasi Silk Saree',
-        marathiName: 'सोनेरी जरी मीनाकारी बनारसी सिल्क साडी',
+        marathiName: 'Golden Zari Meenakari Banarasi Silk Saree',
         sku: 'SSC-BAN-002',
         price: 6499,
         quantity: 1,

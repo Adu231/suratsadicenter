@@ -165,11 +165,8 @@ export const CartPage = () => {
                       {item.name}
                     </h3>
                   </Link>
-                  {item.marathiName && (
-                    <p className="font-devanagari" style={{ fontSize: '0.8rem', color: 'var(--color-primary-maroon)' }}>
-                      {item.marathiName}
-                    </p>
-                  )}
+
+
                   <p style={{ fontSize: '0.8rem', color: 'var(--color-muted-text)', marginTop: '4px' }}>
                     {item.fabric} • {item.colour}
                   </p>

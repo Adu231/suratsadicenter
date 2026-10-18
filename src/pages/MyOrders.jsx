@@ -140,11 +140,8 @@ export const MyOrders = () => {
                       />
                       <div style={{ flex: 1 }}>
                         <h4 style={{ fontSize: '0.95rem', marginBottom: '2px' }}>{item.name}</h4>
-                        {item.marathiName && (
-                          <p className="font-devanagari" style={{ fontSize: '0.8rem', color: 'var(--color-primary-maroon)' }}>
-                            {item.marathiName}
-                          </p>
-                        )}
+
+
                         <p style={{ fontSize: '0.8rem', color: 'var(--color-muted-text)', marginTop: '2px' }}>
                           Qty: {item.quantity} • ₹{item.price.toLocaleString('en-IN')} each
                         </p>

@@ -35,34 +35,49 @@ export const OrderConfirmation = () => {
         backgroundColor: '#FFFFFF',
         border: '1px solid var(--color-border)',
         borderRadius: 'var(--radius-lg)',
-        padding: '36px 24px',
+        padding: '32px 20px',
         textAlign: 'center',
         boxShadow: 'var(--shadow-card)',
         marginBottom: '28px'
       }}>
+        {/* Shop Logo in Receipt */}
+        <div style={{ marginBottom: '18px' }}>
+          <img
+            src="/surat-sadi-center-logo.png"
+            alt="Surat Sadi Center - Premium Handloom Sarees"
+            style={{
+              height: '42px',
+              maxWidth: '240px',
+              objectFit: 'contain',
+              margin: '0 auto',
+              display: 'block'
+            }}
+          />
+        </div>
+
         <div style={{
-          width: '72px',
-          height: '72px',
+          width: '64px',
+          height: '64px',
           borderRadius: 'var(--radius-full)',
           backgroundColor: '#EAF4EE',
           color: 'var(--color-success)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          margin: '0 auto 20px auto'
+          margin: '0 auto 16px auto'
         }}>
-          <CheckCircle2 size={44} />
+          <CheckCircle2 size={38} />
         </div>
 
         <span className="badge badge-success" style={{ fontSize: '0.85rem', padding: '6px 14px', marginBottom: '12px' }}>
           ✓ Demo Order Placed Successfully
         </span>
 
-        <h1 style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.3rem)', marginTop: '8px', marginBottom: '8px' }}>
-          धन्यवाद! Thank You for Shopping
+        <h1 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.2rem)', marginTop: '8px', marginBottom: '6px' }}>
+          Thank You for Shopping with Surat Sadi Center!
         </h1>
 
-        <p style={{ color: 'var(--color-soft-charcoal)', fontSize: '1rem', maxWidth: '580px', margin: '0 auto 18px auto' }}>
+        <p style={{ color: 'var(--color-soft-charcoal)', fontSize: '0.95rem', maxWidth: '580px', margin: '0 auto 16px auto' }}>
           Your saree demo order has been registered in the browser database.
         </p>
 
@@ -191,11 +206,8 @@ export const OrderConfirmation = () => {
               />
               <div style={{ flex: 1 }}>
                 <h4 style={{ fontSize: '0.95rem', marginBottom: '2px' }}>{item.name}</h4>
-                {item.marathiName && (
-                  <p className="font-devanagari" style={{ fontSize: '0.8rem', color: 'var(--color-primary-maroon)' }}>
-                    {item.marathiName}
-                  </p>
-                )}
+
+
                 <p style={{ fontSize: '0.8rem', color: 'var(--color-muted-text)', marginTop: '2px' }}>
                   Quantity: {item.quantity} × ₹{item.price.toLocaleString('en-IN')}
                 </p>

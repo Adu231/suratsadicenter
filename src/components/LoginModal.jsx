@@ -78,7 +78,7 @@ export const LoginModal = () => {
               {isRegisterMode ? 'Create Customer Account' : 'Demo Account Login'}
             </h3>
             <p style={{ color: '#F4EAEF', fontSize: '0.85rem' }}>
-              Surat Sadi Center (सुरत साडी सेंटर)
+              Surat Sadi Center — Premium Handloom Sarees
             </p>
           </div>
           <button

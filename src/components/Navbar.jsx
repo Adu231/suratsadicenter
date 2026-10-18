@@ -47,41 +47,63 @@ export const Navbar = () => {
       position: 'sticky',
       top: 0,
       zIndex: 100,
-      backgroundColor: 'var(--color-white)',
-      boxShadow: 'var(--shadow-subtle)',
+      backgroundColor: 'rgba(255, 255, 255, 0.96)',
+      backdropFilter: 'blur(16px)',
+      boxShadow: '0 4px 25px rgba(12, 10, 10, 0.05)',
+      borderBottom: '1px solid rgba(197, 160, 89, 0.25)',
       transition: 'all var(--transition-fast)'
     }}>
-      {/* Top Announcement Bar */}
+      {/* Top Luxury Announcement Ribbon */}
       <div style={{
-        backgroundColor: 'var(--color-primary-maroon)',
-        color: 'var(--color-white)',
-        fontSize: 'var(--text-xs)',
+        backgroundColor: '#110E0E',
+        color: 'var(--color-antique-gold)',
+        fontSize: '11px',
         padding: '8px 0',
         textAlign: 'center',
-        letterSpacing: '0.02em'
+        letterSpacing: '0.14em',
+        textTransform: 'uppercase',
+        borderBottom: '1px solid rgba(197, 160, 89, 0.3)'
       }}>
         <div className="container" style={{
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
+          gap: '16px',
+          flexWrap: 'wrap'
         }}>
-          <span>
-            ✨ Festive Collection Live: <strong>FREE Pan-India Delivery</strong> on Orders Above ₹1,499 | <strong>Cash on Delivery (Demo)</strong>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            ✦ <strong>Atelier: Behind Eet Gram Panchayat</strong> • Prop. Sumit Asalkar
+          </span>
+          <span className="desktop-only" style={{ opacity: 0.6 }}>|</span>
+          <a
+            href="tel:9890076010"
+            style={{
+              color: '#F4DE98',
+              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '5px'
+            }}
+          >
+            <Phone size={12} /> +91 9890076010
+          </a>
+          <span className="desktop-only" style={{ opacity: 0.6 }}>|</span>
+          <span className="desktop-only" style={{ color: 'var(--color-warm-ivory)' }}>
+            ✦ Complimentary Pan-India Delivery on Sarees Above ₹1,499 • COD Available
           </span>
         </div>
       </div>
 
       {/* Main Header Bar */}
       <div style={{
-        borderBottom: '1px solid var(--color-border)',
-        padding: '12px 0',
-        backgroundColor: 'var(--color-white)'
+        padding: '10px 0',
+        backgroundColor: 'transparent'
       }}>
         <div className="container" style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '20px'
+          gap: '16px'
         }}>
           {/* Mobile menu trigger */}
           <button
@@ -94,46 +116,61 @@ export const Navbar = () => {
               border: 'none',
               cursor: 'pointer',
               color: 'var(--color-soft-charcoal)',
-              padding: '4px'
+              padding: '8px',
+              minWidth: '44px',
+              minHeight: '44px'
             }}
             className="mobile-only"
             aria-label="Toggle Navigation Menu"
           >
-            {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
-          {/* Authentic Brand Identity */}
-          <Link to="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <span
-              className="font-devanagari"
+          {/* Authentic Brand Identity - Featuring Shop Logo */}
+          <Link
+            to="/"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              textDecoration: 'none',
+              padding: '2px 0'
+            }}
+            aria-label="Surat Sadi Center Home"
+          >
+            <img
+              src="/surat-sadi-center-logo.png"
+              alt="Surat Sadi Center - Premium Handloom Sarees"
               style={{
-                fontSize: 'clamp(1.4rem, 2.5vw, 1.875rem)',
-                fontWeight: 700,
-                color: 'var(--color-primary-maroon)',
-                lineHeight: 1.15
+                height: '56px',
+                width: 'auto',
+                maxWidth: '260px',
+                objectFit: 'contain',
+                display: 'block'
               }}
-            >
-              सुरत साडी सेंटर
-            </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
-              {/* Fix 3: Removed all-caps transformation, using title case */}
-              <span style={{
-                fontSize: 'var(--text-xs)',
-                fontWeight: 600,
-                color: 'var(--color-soft-charcoal)',
-                letterSpacing: '0.02em'
-              }}>
-                Surat Sadi Center
+              onError={(e) => {
+                e.target.style.display = 'none';
+                if (e.target.nextElementSibling) {
+                  e.target.nextElementSibling.style.display = 'flex';
+                }
+              }}
+            />
+            {/* Fallback & Complementary Wordmark */}
+            <div style={{ display: 'none', flexDirection: 'column' }}>
+              <span
+                style={{
+                  fontSize: '1.4rem',
+                  fontWeight: 700,
+                  color: 'var(--color-primary-maroon)',
+                  lineHeight: 1.1,
+                  fontFamily: 'var(--font-brand-display)',
+                  letterSpacing: '0.08em'
+                }}
+              >
+                SURAT SADI CENTER
               </span>
-              <span style={{
-                fontSize: 'var(--text-xs)',
-                backgroundColor: 'var(--color-secondary-surface)',
-                color: 'var(--color-muted-text)',
-                padding: '1px 6px',
-                borderRadius: 'var(--radius-sm)',
-                fontWeight: 500
-              }}>
-                Dharashiv 413534
+              <span style={{ fontSize: '10px', color: 'var(--color-antique-gold)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                Haute Handloom Atelier
               </span>
             </div>
           </Link>
@@ -143,30 +180,32 @@ export const Navbar = () => {
             onSubmit={handleSearchSubmit}
             style={{
               flex: 1,
-              maxWidth: '480px',
+              maxWidth: '460px',
               position: 'relative'
             }}
             className="desktop-only"
           >
             <input
               type="text"
-              placeholder="Search pure silk Paithani, Banarasi, Kanjivaram..."
+              placeholder="Search handloom Paithani, Banarasi, Kanjivaram heirlooms..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="form-input"
               style={{
-                height: '42px',
-                paddingLeft: '40px',
+                height: '44px',
+                paddingLeft: '42px',
                 paddingRight: '16px',
-                borderRadius: 'var(--radius-full)',
-                backgroundColor: 'var(--color-warm-ivory)',
-                borderColor: 'var(--color-border)',
-                fontSize: 'var(--text-sm)'
+                borderRadius: 'var(--radius-sm)',
+                backgroundColor: 'rgba(250, 247, 242, 0.8)',
+                border: '1px solid rgba(197, 160, 89, 0.35)',
+                fontSize: '13px',
+                fontFamily: 'var(--font-sans)',
+                transition: 'all 0.3s ease'
               }}
             />
             <Search
-              size={18}
-              color="var(--color-muted-text)"
+              size={17}
+              color="var(--color-antique-gold)"
               style={{
                 position: 'absolute',
                 left: '14px',
@@ -187,21 +226,23 @@ export const Navbar = () => {
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '6px',
-                      background: 'transparent',
-                      border: '1px solid var(--color-border)',
-                      borderRadius: 'var(--radius-full)',
-                      padding: '6px 12px',
+                      gap: '8px',
+                      background: 'rgba(255, 255, 255, 0.8)',
+                      border: '1px solid rgba(197, 160, 89, 0.35)',
+                      borderRadius: 'var(--radius-sm)',
+                      padding: '7px 14px',
                       cursor: 'pointer',
                       color: 'var(--color-soft-charcoal)',
-                      fontSize: 'var(--text-sm)'
+                      fontSize: '12px',
+                      fontWeight: 600,
+                      letterSpacing: '0.04em'
                     }}
                   >
-                    <User size={16} color="var(--color-primary-maroon)" />
+                    <User size={15} color="var(--color-primary-maroon)" />
                     <span style={{ maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {user.name.split(' ')[0]}
                     </span>
-                    <ChevronDown size={14} />
+                    <ChevronDown size={13} color="var(--color-antique-gold)" />
                   </button>
 
                   {userDropdownOpen && (
@@ -439,7 +480,7 @@ export const Navbar = () => {
               <SlidersHorizontal size={13} /> Admin Panel
             </Link>
             <a
-              href="https://wa.me/919876543210?text=Hello%20Surat%20Sadi%20Center,%20I%20have%20an%20enquiry%20regarding%20sarees"
+              href="https://wa.me/919890076010?text=Hello%20Surat%20Sadi%20Center,%20I%20have%20an%20enquiry%20regarding%20sarees"
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -463,22 +504,61 @@ export const Navbar = () => {
         <div style={{
           backgroundColor: 'var(--color-white)',
           borderBottom: '2px solid var(--color-primary-maroon)',
-          padding: '16px 20px',
-          boxShadow: 'var(--shadow-hover)'
+          padding: '16px 20px 24px 20px',
+          boxShadow: 'var(--shadow-hover)',
+          maxHeight: 'calc(100vh - 120px)',
+          overflowY: 'auto'
         }}>
+          {/* Shop Card in Mobile Drawer */}
+          <div style={{
+            backgroundColor: 'var(--color-warm-ivory)',
+            border: '1px solid var(--color-border)',
+            borderRadius: 'var(--radius-md)',
+            padding: '12px 14px',
+            marginBottom: '16px'
+          }}>
+            <p style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-primary-maroon)', margin: '0 0 2px 0', fontFamily: 'var(--font-serif)' }}>
+              Surat Sadi Center
+            </p>
+            <p style={{ fontSize: '11px', color: 'var(--color-soft-charcoal)', margin: '0 0 6px 0', lineHeight: 1.4 }}>
+              Suiting | Shirting | Children's Wear | Ladies Wear | Men's Wear
+            </p>
+            <p style={{ fontSize: '11px', color: 'var(--color-muted-text)', margin: '0 0 10px 0' }}>
+              📍 Behind Eet Gram Panchayat • Prop. Sumit Asalkar
+            </p>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <a
+                href="tel:9890076010"
+                className="btn btn-primary btn-sm"
+                style={{ flex: 1, fontSize: '12px', minHeight: '38px', gap: '6px' }}
+              >
+                <Phone size={13} /> Call: 9890076010
+              </a>
+              <a
+                href="https://wa.me/919890076010?text=Hello%20Surat%20Sadi%20Center"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary btn-sm"
+                style={{ flex: 1, fontSize: '12px', minHeight: '38px', color: '#1E7E45', borderColor: '#1E7E45', gap: '6px' }}
+              >
+                WhatsApp
+              </a>
+            </div>
+          </div>
+
           {/* Mobile Search */}
           <form onSubmit={handleSearchSubmit} style={{ marginBottom: '16px' }}>
             <div style={{ position: 'relative' }}>
               <input
                 type="text"
-                placeholder="Search sarees..."
+                placeholder="Search Paithani, Banarasi, Silk..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="form-input"
-                style={{ paddingLeft: '38px', height: '40px', fontSize: 'var(--text-sm)' }}
+                style={{ paddingLeft: '38px', height: '44px', fontSize: '15px' }}
               />
               <Search
-                size={16}
+                size={17}
                 color="var(--color-muted-text)"
                 style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }}
               />
@@ -492,32 +572,34 @@ export const Navbar = () => {
                   to={link.path}
                   onClick={() => setMobileMenuOpen(false)}
                   style={{
-                    display: 'block',
-                    padding: '10px 0',
-                    fontSize: 'var(--text-sm)',
-                    fontWeight: 600
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '13px 0',
+                    fontSize: '15px',
+                    fontWeight: 600,
+                    color: 'var(--color-soft-charcoal)'
                   }}
                 >
                   {link.label}
                 </Link>
               </li>
             ))}
-            <li style={{ paddingTop: '10px' }}>
+            <li style={{ borderBottom: '1px solid var(--color-border)' }}>
               <Link
                 to="/orders"
                 onClick={() => setMobileMenuOpen(false)}
-                style={{ display: 'block', padding: '8px 0', fontSize: 'var(--text-sm)', color: 'var(--color-soft-charcoal)' }}
+                style={{ display: 'flex', alignItems: 'center', padding: '13px 0', fontSize: '15px', color: 'var(--color-soft-charcoal)', fontWeight: 500 }}
               >
-                📦 My Demo Orders
+                📦 My Orders
               </Link>
             </li>
             <li>
               <Link
                 to="/admin"
                 onClick={() => setMobileMenuOpen(false)}
-                style={{ display: 'block', padding: '8px 0', fontSize: 'var(--text-sm)', color: 'var(--color-primary-maroon)', fontWeight: 600 }}
+                style={{ display: 'flex', alignItems: 'center', padding: '13px 0', fontSize: '15px', color: 'var(--color-primary-maroon)', fontWeight: 600 }}
               >
-                ⚙️ Admin Dashboard (Demo)
+                ⚙️ Admin Dashboard
               </Link>
             </li>
           </ul>

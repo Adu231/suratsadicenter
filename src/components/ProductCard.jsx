@@ -29,15 +29,18 @@ export const ProductCard = ({ product }) => {
       height: '100%',
       position: 'relative',
       backgroundColor: 'var(--color-white)',
-      transition: 'transform var(--transition-base), box-shadow var(--transition-base)'
+      border: '1px solid rgba(197, 160, 89, 0.22)',
+      borderRadius: 'var(--radius-sm)',
+      boxShadow: '0 4px 20px rgba(12, 10, 10, 0.04)',
+      transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
     }}>
       {/* Product Image & Badges */}
       <Link to={`/product/${product.slug}`} style={{ position: 'relative', display: 'block', overflow: 'hidden' }}>
         <div style={{
           width: '100%',
-          paddingTop: '125%', // 4:5 Aspect Ratio
+          paddingTop: '128%', // 4:5.1 Editorial Portrait Ratio
           position: 'relative',
-          backgroundColor: 'var(--color-secondary-surface)',
+          backgroundColor: '#F5EFE6',
           overflow: 'hidden'
         }}>
           <img
@@ -50,8 +53,10 @@ export const ProductCard = ({ product }) => {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              transition: 'transform 0.4s ease'
+              transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
             }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.06)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
             loading="lazy"
             onError={(e) => {
               e.target.src = '/saree-paithani.png';
@@ -59,34 +64,61 @@ export const ProductCard = ({ product }) => {
           />
         </div>
 
-        {/* Floating Badges */}
+        {/* Floating Minimalist Luxury Badges */}
         <div style={{
           position: 'absolute',
-          top: '10px',
-          left: '10px',
+          top: '12px',
+          left: '12px',
           display: 'flex',
           flexDirection: 'column',
           gap: '6px',
           zIndex: 2
         }}>
           {product.isBestseller && (
-            <span className="badge badge-gold">
+            <span style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.92)',
+              backdropFilter: 'blur(8px)',
+              color: '#8A641B',
+              border: '1px solid rgba(197, 160, 89, 0.5)',
+              padding: '3px 9px',
+              fontSize: '10px',
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              borderRadius: '2px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+            }}>
               ★ Bestseller
             </span>
           )}
           {product.isNewArrival && !product.isBestseller && (
-            <span className="badge badge-maroon">
-              New Arrival
-            </span>
-          )}
-          {discountPercent > 0 && (
-            <span className="badge badge-success">
-              {discountPercent}% OFF
+            <span style={{
+              backgroundColor: 'rgba(94, 18, 29, 0.9)',
+              backdropFilter: 'blur(8px)',
+              color: '#FFFFFF',
+              border: '1px solid rgba(197, 160, 89, 0.4)',
+              padding: '3px 9px',
+              fontSize: '10px',
+              fontWeight: 600,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              borderRadius: '2px'
+            }}>
+              New Edition
             </span>
           )}
           {isLowStock && (
-            <span className="badge badge-error">
-              Only {product.stockQuantity} Left!
+            <span style={{
+              backgroundColor: 'rgba(20, 18, 18, 0.85)',
+              color: '#F4DE98',
+              padding: '3px 8px',
+              fontSize: '9px',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              borderRadius: '2px'
+            }}>
+              Only {product.stockQuantity} Left
             </span>
           )}
         </div>
@@ -98,55 +130,72 @@ export const ProductCard = ({ product }) => {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: 'rgba(255, 255, 255, 0.75)',
+            backgroundColor: 'rgba(20, 18, 18, 0.65)',
+            backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 3
           }}>
-            <span className="badge badge-error" style={{ fontSize: 'var(--text-sm)', padding: '6px 12px' }}>
-              Sold Out
+            <span style={{
+              color: '#FFFFFF',
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              fontSize: '12px',
+              fontWeight: 700,
+              border: '1px solid rgba(255,255,255,0.4)',
+              padding: '8px 16px',
+              backgroundColor: 'rgba(0,0,0,0.6)'
+            }}>
+              Archived / Sold Out
             </span>
           </div>
         )}
       </Link>
 
-      {/* Card Content - Fix 8: Tightly grouped with minimal gap, eliminating excess vertical space */}
+      {/* Card Content */}
       <div style={{
-        padding: '14px',
+        padding: '14px 16px 16px 16px',
         display: 'flex',
         flexDirection: 'column',
         flex: 1,
-        gap: '4px'
+        gap: '6px'
       }}>
         <div>
-          {/* Category & Tags */}
+          {/* Fabric & Rating */}
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: '4px',
-            fontSize: 'var(--text-xs)',
-            color: 'var(--color-muted-text)'
+            fontSize: '11px'
           }}>
-            <span style={{ textTransform: 'capitalize', letterSpacing: '0.02em', fontWeight: 500 }}>
+            <span style={{
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
+              fontWeight: 600,
+              color: 'var(--color-antique-gold)',
+              fontSize: '10px'
+            }}>
               {product.fabric}
             </span>
             {product.rating && (
-              <span style={{ display: 'flex', alignItems: 'center', gap: '3px', color: 'var(--color-antique-gold)', fontWeight: 600 }}>
-                <Star size={12} fill="currentColor" color="currentColor" /> {product.rating}
+              <span style={{ display: 'flex', alignItems: 'center', gap: '3px', color: '#B0882E', fontWeight: 600, fontSize: '11px' }}>
+                <Star size={11} fill="currentColor" color="currentColor" /> {product.rating}
               </span>
             )}
           </div>
 
-          {/* Fix 4: Changed H4 to H3 to prevent skipping heading levels (H2 -> H3) */}
+          {/* Saree Name */}
           <Link to={`/product/${product.slug}`}>
             <h3 style={{
-              fontSize: 'var(--text-sm)',
+              fontSize: '14px',
               lineHeight: 1.35,
               fontWeight: 600,
+              fontFamily: 'var(--font-brand-display)',
+              letterSpacing: '0.01em',
               color: 'var(--color-soft-charcoal)',
-              margin: '0 0 2px 0',
+              margin: '0 0 6px 0',
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
@@ -155,46 +204,34 @@ export const ProductCard = ({ product }) => {
               {product.name}
             </h3>
           </Link>
-
-          {/* Marathi Name */}
-          {product.marathiName && (
-            <p className="font-devanagari" style={{
-              fontSize: 'var(--text-xs)',
-              color: 'var(--color-primary-maroon)',
-              margin: '0 0 4px 0',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis'
-            }}>
-              {product.marathiName}
-            </p>
-          )}
         </div>
 
-        {/* Pricing & Add To Cart - Fix 8: Grouped tightly beneath product details */}
+        {/* Pricing & Add To Cart */}
         <div style={{
           marginTop: 'auto',
-          paddingTop: '8px',
-          borderTop: '1px solid var(--color-border)',
+          paddingTop: '10px',
+          borderTop: '1px solid rgba(197, 160, 89, 0.18)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           gap: '8px'
         }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', flexWrap: 'wrap' }}>
               <span style={{
-                fontSize: 'var(--text-lg)',
+                fontSize: '16px',
                 fontWeight: 700,
-                color: 'var(--color-primary-maroon)'
+                color: 'var(--color-primary-maroon)',
+                fontFamily: 'var(--font-brand-display)',
+                letterSpacing: '0.02em'
               }}>
                 ₹{product.price.toLocaleString('en-IN')}
               </span>
               {product.compareAtPrice && product.compareAtPrice > product.price && (
                 <span style={{
-                  fontSize: 'var(--text-xs)',
+                  fontSize: '12px',
                   textDecoration: 'line-through',
-                  color: 'var(--color-muted-text)'
+                  color: 'var(--color-muted-light)'
                 }}>
                   ₹{product.compareAtPrice.toLocaleString('en-IN')}
                 </span>
@@ -202,24 +239,27 @@ export const ProductCard = ({ product }) => {
             </div>
           </div>
 
-          {/* Fix 9: Unified standard button styling */}
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
             className={`btn ${added ? 'btn-secondary' : 'btn-primary'} btn-sm`}
             style={{
               padding: '0 12px',
-              gap: '4px'
+              minHeight: '34px',
+              height: '34px',
+              fontSize: '10px',
+              letterSpacing: '0.08em',
+              gap: '5px'
             }}
             title={isOutOfStock ? 'Currently out of stock' : 'Add Saree to Bag'}
           >
             {added ? (
               <>
-                <Check size={14} color="var(--color-success)" /> Added
+                <Check size={12} color="var(--color-success)" /> Added
               </>
             ) : (
               <>
-                <ShoppingBag size={14} /> Add
+                <ShoppingBag size={12} /> Bag
               </>
             )}
           </button>

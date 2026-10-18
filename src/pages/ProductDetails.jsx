@@ -203,16 +203,8 @@ export const ProductDetails = () => {
               {product.name}
             </h1>
 
-            {product.marathiName && (
-              <p className="font-devanagari" style={{
-                fontSize: '1.15rem',
-                color: 'var(--color-primary-maroon)',
-                fontWeight: 600,
-                marginBottom: '12px'
-              }}>
-                {product.marathiName}
-              </p>
-            )}
+
+
 
             {product.rating && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}>
@@ -362,7 +354,7 @@ export const ProductDetails = () => {
 
           {/* WhatsApp Direct Enquiry */}
           <a
-            href={`https://wa.me/919876543210?text=Hello%20Surat%20Sadi%20Center,%20I%20am%20interested%20in%20"${encodeURIComponent(product.name)}"%20(SKU:%20${product.sku})`}
+            href={`https://wa.me/919890076010?text=Hello%20Surat%20Sadi%20Center,%20I%20am%20interested%20in%20"${encodeURIComponent(product.name)}"%20(SKU:%20${product.sku})`}
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -380,7 +372,7 @@ export const ProductDetails = () => {
               textDecoration: 'none'
             }}
           >
-            <Phone size={16} /> Request Video Call View on WhatsApp
+            <Phone size={16} /> Request Video Call View on WhatsApp (9890076010)
           </a>
 
           {/* Delivery PIN Code Serviceability Checker */}
@@ -396,6 +388,8 @@ export const ProductDetails = () => {
             <div style={{ display: 'flex', gap: '8px' }}>
               <input
                 type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 placeholder="Enter 6-digit PIN code"
                 value={pincode}
                 onChange={(e) => setPincode(e.target.value)}
@@ -505,21 +499,64 @@ export const ProductDetails = () => {
 
       {/* Related Sarees */}
       {relatedProducts.length > 0 && (
-        <section style={{ marginTop: '72px', paddingTop: '48px', borderTop: '1px solid var(--color-border)' }}>
-          <h2 style={{ fontSize: '1.6rem', marginBottom: '24px' }}>
+        <section style={{ marginTop: '56px', paddingTop: '36px', borderTop: '1px solid var(--color-border)' }}>
+          <h2 style={{ fontSize: 'clamp(1.35rem, 3vw, 1.75rem)', marginBottom: '20px' }}>
             Similar Handwoven Sarees
           </h2>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-            gap: '24px'
-          }}>
+          <div className="mobile-grid-2col">
             {relatedProducts.map(p => (
               <ProductCard key={p.id} product={p} />
             ))}
           </div>
         </section>
       )}
+
+      {/* Mobile Sticky Bottom Action Bar (Fixed above MobileBottomNav) */}
+      <div
+        className="mobile-only"
+        style={{
+          position: 'fixed',
+          bottom: 'calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px))',
+          left: 0,
+          right: 0,
+          backgroundColor: 'rgba(255, 255, 255, 0.98)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderTop: '1px solid var(--color-border)',
+          padding: '10px 14px',
+          zIndex: 950,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '10px',
+          boxShadow: '0 -4px 16px rgba(0, 0, 0, 0.08)'
+        }}
+      >
+        <div>
+          <div style={{ fontSize: '11px', color: 'var(--color-muted-text)' }}>Price</div>
+          <div style={{ fontSize: '17px', fontWeight: 700, color: 'var(--color-primary-maroon)', lineHeight: 1.1 }}>
+            ₹{product.price.toLocaleString('en-IN')}
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: '8px', flex: 1, justifyContent: 'flex-end' }}>
+          <button
+            onClick={handleAddToCart}
+            disabled={isOutOfStock}
+            className="btn btn-secondary btn-sm"
+            style={{ minHeight: '40px', padding: '0 12px', fontSize: '12px', flex: 1 }}
+          >
+            {added ? '✓ Added to Cart' : '+ Add to Cart'}
+          </button>
+          <button
+            onClick={handleBuyNow}
+            disabled={isOutOfStock}
+            className="btn btn-primary btn-sm"
+            style={{ minHeight: '40px', padding: '0 14px', fontSize: '12px', flex: 1 }}
+          >
+            Buy Now
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

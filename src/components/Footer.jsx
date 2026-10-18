@@ -129,20 +129,44 @@ export const Footer = () => {
         }}>
           {/* Brand Col */}
           <div>
-            <h3 className="font-devanagari" style={{ color: 'var(--color-antique-gold)', fontSize: 'var(--text-xl)', marginBottom: '8px' }}>
-              सुरत साडी सेंटर
-            </h3>
-            <p style={{ color: 'var(--color-secondary-surface)', fontSize: 'var(--text-xs)', lineHeight: 1.6, marginBottom: '16px' }}>
-              Surat Sadi Center is a heritage textile house preserving Maharashtra's handloom traditions. Specializing in pure silk Paithani, royal Banarasi brocades, and bridal sarees with authentic zari artistry.
+            <div style={{
+              backgroundColor: '#FFFFFF',
+              borderRadius: 'var(--radius-sm)',
+              padding: '12px 18px',
+              display: 'inline-block',
+              marginBottom: '16px',
+              maxWidth: '260px',
+              border: '1px solid rgba(197, 160, 89, 0.45)',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+            }}>
+              <img
+                src="/surat-sadi-center-logo.png"
+                alt="Surat Sadi Center Logo"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  maxHeight: '48px',
+                  objectFit: 'contain',
+                  display: 'block'
+                }}
+              />
+            </div>
+            <p style={{ color: 'var(--color-antique-gold)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
+              Suiting • Shirting • Children's Wear • Ladies • Men's
+            </p>
+            <p style={{ color: 'rgba(255, 255, 255, 0.72)', fontSize: '13px', lineHeight: 1.7, marginBottom: '20px' }}>
+              Surat Sadi Center — Dharashiv's trusted textile atelier for authentic handloom Paithani, Banarasi, Kanjivaram and complete wedding attire.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: 'var(--text-xs)', color: 'var(--color-secondary-surface)' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                 <MapPin size={16} color="var(--color-antique-gold)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                <span>Main Market Road, Near Gandhi Chowk, Dharashiv, Maharashtra - 413534</span>
+                <span>Behind Eet Gram Panchayat, Dist. Dharashiv, Maharashtra - 413534</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Phone size={16} color="var(--color-antique-gold)" style={{ flexShrink: 0 }} />
-                <span>+91 98765 43210</span>
+                <a href="tel:9890076010" style={{ color: 'var(--color-warm-ivory)', fontWeight: 600 }}>
+                  Prop. Sumit Asalkar • 9890076010
+                </a>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Mail size={16} color="var(--color-antique-gold)" style={{ flexShrink: 0 }} />
@@ -159,27 +183,27 @@ export const Footer = () => {
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px', fontSize: 'var(--text-xs)' }}>
               <li>
                 <Link to="/catalog?category=paithani-sarees" style={{ color: 'var(--color-secondary-surface)' }}>
-                  Pure Silk Yeola Paithani (पैठणी साडी)
+                  Pure Silk Yeola Paithani Saree
                 </Link>
               </li>
               <li>
                 <Link to="/catalog?category=banarasi-silk-sarees" style={{ color: 'var(--color-secondary-surface)' }}>
-                  Banarasi Katan Silk (बनारसी सिल्क)
+                  Banarasi Katan Silk Saree
                 </Link>
               </li>
               <li>
                 <Link to="/catalog?category=kanjivaram-silk-sarees" style={{ color: 'var(--color-secondary-surface)' }}>
-                  Kanjivaram Temple Silk (कांजीवरम)
+                  Kanjivaram Temple Silk Saree
                 </Link>
               </li>
               <li>
                 <Link to="/catalog?category=chanderi-cotton-sarees" style={{ color: 'var(--color-secondary-surface)' }}>
-                  Chanderi & Handloom Cotton (चांदेरी)
+                  Chanderi & Handloom Cotton Saree
                 </Link>
               </li>
               <li>
                 <Link to="/catalog?category=bridal-heritage-sarees" style={{ color: 'var(--color-secondary-surface)' }}>
-                  Bridal Heritage Trousseau (वधू संग्रह)
+                  Bridal Heritage Trousseau Collection
                 </Link>
               </li>
             </ul>
@@ -209,7 +233,7 @@ export const Footer = () => {
               </li>
               <li>
                 <a
-                  href="https://wa.me/919876543210?text=Hello%20Surat%20Sadi%20Center,%20I%20want%20to%20view%20sarees%20on%20video%20call"
+                  href="https://wa.me/919890076010?text=Hello%20Surat%20Sadi%20Center,%20I%20want%20to%20view%20sarees%20on%20video%20call"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ color: 'var(--color-antique-gold)', fontWeight: 600 }}
@@ -258,7 +282,7 @@ export const Footer = () => {
           color: 'var(--color-secondary-surface)'
         }}>
           <div>
-            © {new Date().getFullYear()} Surat Sadi Center (सुरत साडी सेंटर). PIN: 413534.
+            © {new Date().getFullYear()} Surat Sadi Center. PIN: 413534.
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span>Crafted for authentic Indian handlooms • Frontend-Only Demo MVP</span>

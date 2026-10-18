@@ -678,13 +678,13 @@ export const AdminDashboard = () => {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Marathi Name (साडीचे नाव)</label>
+                <label className="form-label">Local/Regional Name (Optional)</label>
                 <input
                   type="text"
-                  className="form-input font-devanagari"
+                  className="form-input"
                   value={productForm.marathiName}
                   onChange={(e) => setProductForm({ ...productForm, marathiName: e.target.value })}
-                  placeholder="उदा. शाही पेशवाई पैठणी"
+                  placeholder="e.g. Royal Peacock Border Pure Silk Paithani"
                 />
               </div>
 

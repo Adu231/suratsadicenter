@@ -140,26 +140,109 @@ export const Catalog = () => {
         </p>
       </div>
 
-      {/* Mobile Filter Toggle & Sort Bar */}
+      {/* Mobile-Friendly Horizontal Category Pills Strip */}
+      <div
+        className="no-scrollbar"
+        style={{
+          display: 'flex',
+          gap: '8px',
+          overflowX: 'auto',
+          paddingBottom: '8px',
+          marginBottom: '16px',
+          WebkitOverflowScrolling: 'touch'
+        }}
+      >
+        <button
+          onClick={() => handleCategoryChange('all')}
+          style={{
+            flexShrink: 0,
+            padding: '7px 16px',
+            borderRadius: 'var(--radius-sm)',
+            border: selectedCategory === 'all' ? '1px solid var(--color-antique-gold)' : '1px solid rgba(197, 160, 89, 0.25)',
+            backgroundColor: selectedCategory === 'all' ? 'var(--color-primary-maroon)' : '#FFFFFF',
+            color: selectedCategory === 'all' ? '#FFFFFF' : 'var(--color-soft-charcoal)',
+            fontWeight: 700,
+            fontSize: '11px',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            cursor: 'pointer',
+            transition: 'all var(--transition-fast)'
+          }}
+        >
+          All Sarees
+        </button>
+        {categories.map(c => {
+          const isSelected = selectedCategory === c.slug;
+          return (
+            <button
+              key={c.slug}
+              onClick={() => handleCategoryChange(c.slug)}
+              style={{
+                flexShrink: 0,
+                padding: '7px 16px',
+                borderRadius: 'var(--radius-sm)',
+                border: isSelected ? '1px solid var(--color-antique-gold)' : '1px solid rgba(197, 160, 89, 0.25)',
+                backgroundColor: isSelected ? 'var(--color-primary-maroon)' : '#FFFFFF',
+                color: isSelected ? '#FFFFFF' : 'var(--color-soft-charcoal)',
+                fontWeight: isSelected ? 700 : 500,
+                fontSize: '11px',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+                transition: 'all var(--transition-fast)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <span>{c.name}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Mobile Search & Filter / Sort Bar */}
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: '12px',
-        marginBottom: '24px',
-        padding: '12px 16px',
+        gap: '10px',
+        marginBottom: '20px',
+        padding: '10px 14px',
         backgroundColor: '#FFFFFF',
         border: '1px solid var(--color-border)',
         borderRadius: 'var(--radius-md)'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Mobile Search Input */}
+        <div style={{ position: 'relative', flex: '1 1 200px' }}>
+          <input
+            id="catalog-search-input"
+            type="text"
+            placeholder="Search Paithani, Silk..."
+            value={searchQuery}
+            onChange={(e) => {
+              const newParams = new URLSearchParams(searchParams);
+              if (e.target.value) {
+                newParams.set('search', e.target.value);
+              } else {
+                newParams.delete('search');
+              }
+              setSearchParams(newParams);
+            }}
+            className="form-input"
+            style={{ height: '38px', minHeight: '38px', paddingLeft: '34px', fontSize: '14px' }}
+          />
+          <Search size={15} color="var(--color-muted-text)" style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }} />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <button
             onClick={() => setMobileFilterOpen(true)}
             className="btn btn-secondary btn-sm mobile-only"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', height: '38px', minHeight: '38px' }}
           >
-            <Filter size={15} /> Filters {activeFiltersCount > 0 && `(${activeFiltersCount})`}
+            <Filter size={14} /> Filters {activeFiltersCount > 0 && `(${activeFiltersCount})`}
           </button>
 
           {activeFiltersCount > 0 && (
@@ -169,34 +252,29 @@ export const Catalog = () => {
                 background: 'transparent',
                 border: 'none',
                 color: 'var(--color-primary-maroon)',
-                fontSize: '0.85rem',
+                fontSize: '0.8rem',
                 cursor: 'pointer',
                 fontWeight: 600,
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '4px'
+                gap: '3px'
               }}
             >
-              <RotateCcw size={13} /> Reset Filters
+              <RotateCcw size={12} /> Reset
             </button>
           )}
-        </div>
 
-        {/* Sort Select */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <label style={{ fontSize: '0.85rem', color: 'var(--color-muted-text)', whiteSpace: 'nowrap' }}>
-            Sort By:
-          </label>
+          {/* Sort Select */}
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             className="form-select"
-            style={{ height: '38px', width: 'auto', minWidth: '170px', padding: '0 12px', fontSize: '0.85rem' }}
+            style={{ height: '38px', minHeight: '38px', width: 'auto', padding: '0 8px', fontSize: '13px' }}
           >
-            <option value="newest">Newest Arrivals</option>
-            <option value="bestseller">Bestsellers First</option>
-            <option value="price_asc">Price: Low to High</option>
-            <option value="price_desc">Price: High to Low</option>
+            <option value="newest">Newest</option>
+            <option value="bestseller">Bestseller</option>
+            <option value="price_asc">Price: Low-High</option>
+            <option value="price_desc">Price: High-Low</option>
           </select>
         </div>
       </div>
@@ -341,11 +419,7 @@ export const Catalog = () => {
               </button>
             </div>
           ) : (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-              gap: '24px'
-            }}>
+            <div className="mobile-grid-2col">
               {filteredProducts.map(product => (
                 <ProductCard key={product.id} product={product} />
               ))}
