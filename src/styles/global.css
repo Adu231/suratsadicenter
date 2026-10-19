@@ -663,3 +663,28 @@ article:hover .product-img-zoom {
   box-shadow: 0 0 0 3px rgba(147, 26, 45, 0.12), 0 1px 4px rgba(147, 26, 45, 0.08);
   background-color: #FFFCF9;
 }
+
+/* =========================================================================
+   ADMIN DASHBOARD RESPONSIVE CONTROLS (NO HORIZONTAL SCROLL)
+   ========================================================================= */
+.admin-table-desktop {
+  display: block;
+  width: 100%;
+}
+
+.admin-cards-mobile {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .admin-table-desktop {
+    display: none !important;
+  }
+  .admin-cards-mobile {
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+}
+

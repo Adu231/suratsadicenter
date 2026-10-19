@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Truck, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext.jsx';
+import { STORE_CONFIG, getWhatsAppCartOrderUrl } from '../config/storeConfig.js';
 
 export const CartPage = () => {
   const {
@@ -278,7 +279,7 @@ export const CartPage = () => {
             </div>
           </div>
 
-          <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <button
               onClick={() => navigate('/checkout')}
               className="btn btn-primary btn-lg"
@@ -287,7 +288,24 @@ export const CartPage = () => {
               Proceed to Demo Checkout <ArrowRight size={18} />
             </button>
 
-            <p style={{ fontSize: '0.75rem', color: 'var(--color-muted-text)', textAlign: 'center', lineHeight: 1.4 }}>
+            <a
+              href={getWhatsAppCartOrderUrl(items, total)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-secondary"
+              style={{
+                width: '100%',
+                minHeight: '44px',
+                height: '44px',
+                color: '#1E7E45',
+                borderColor: '#1E7E45',
+                fontSize: '12px'
+              }}
+            >
+              Order via WhatsApp (+91 {STORE_CONFIG.phone})
+            </a>
+
+            <p style={{ fontSize: '0.75rem', color: 'var(--color-muted-text)', textAlign: 'center', lineHeight: 1.4, margin: '4px 0 0 0' }}>
               *This is a local demo checkout. No actual charges are made.
             </p>
           </div>

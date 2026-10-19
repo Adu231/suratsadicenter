@@ -40,6 +40,18 @@ export const ProductProvider = ({ children }) => {
     return updated;
   };
 
+  const saveCategory = async (categoryData) => {
+    const updated = await productService.saveCategory(categoryData);
+    setCategories(updated);
+    return updated;
+  };
+
+  const deleteCategory = async (categoryId) => {
+    const updated = await productService.deleteCategory(categoryId);
+    setCategories(updated);
+    return updated;
+  };
+
   const resetAllData = () => {
     storageService.resetAllDemoData();
     refreshProducts();
@@ -55,6 +67,8 @@ export const ProductProvider = ({ children }) => {
         saveProduct,
         deleteProduct,
         updateStock,
+        saveCategory,
+        deleteCategory,
         resetAllData
       }}
     >

@@ -4,29 +4,34 @@ import {
   ShoppingBag,
   Truck,
   ShieldCheck,
-  RotateCcw,
   Star,
   Check,
   ChevronRight,
   Phone,
-  Clock,
-  Sparkles
+  MessageCircle,
+  Heart,
+  ArrowLeft,
+  Share2
 } from 'lucide-react';
 import { useProducts } from '../context/ProductContext.jsx';
 import { useCart } from '../context/CartContext.jsx';
+import { useWishlist } from '../context/WishlistContext.jsx';
 import { shippingService } from '../services/shippingService.js';
 import { ProductCard } from '../components/ProductCard.jsx';
+import { STORE_CONFIG, getWhatsAppProductEnquiryUrl } from '../config/storeConfig.js';
 
 export const ProductDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { products } = useProducts();
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
 
-  const product = products.find(p => p.slug === slug);
+  const product = products.find(p => p.slug === slug || p.id === slug);
   const [selectedImage, setSelectedImage] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [shared, setShared] = useState(false);
 
   // Delivery check state
   const [pincode, setPincode] = useState('413534');
@@ -53,12 +58,12 @@ export const ProductDetails = () => {
   if (!product) {
     return (
       <div className="container" style={{ padding: '64px 16px', textAlign: 'center' }}>
-        <h2>Saree Not Found</h2>
+        <h2 style={{ color: 'var(--color-primary-maroon)' }}>Saree Not Found</h2>
         <p style={{ color: 'var(--color-muted-text)', marginTop: '8px', marginBottom: '24px' }}>
-          The requested saree might have been updated or removed from the catalog.
+          The requested saree might have been updated or removed from the demo catalog.
         </p>
-        <Link to="/catalog" className="btn btn-primary">
-          Back to Saree Collection
+        <Link to="/" className="btn btn-primary">
+          <ArrowLeft size={14} /> Back to Saree Storefront
         </Link>
       </div>
     );
@@ -70,448 +75,612 @@ export const ProductDetails = () => {
 
   const isOutOfStock = product.stockQuantity <= 0;
   const isLowStock = product.stockQuantity > 0 && product.stockQuantity <= (product.lowStockThreshold || 3);
+  const isWishlisted = isInWishlist(product.id);
 
   const handleAddToCart = () => {
+    if (isOutOfStock) return;
     addToCart(product.id, quantity, true);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
 
   const handleBuyNow = () => {
+    if (isOutOfStock) return;
     addToCart(product.id, quantity, false);
     navigate('/checkout');
   };
 
+  const handleShare = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href);
+      setShared(true);
+      setTimeout(() => setShared(false), 2000);
+    }
+  };
+
   const relatedProducts = products
-    .filter(p => p.category === product.category && p.id !== product.id)
+    .filter(p => (p.category === product.category || p.fabric === product.fabric) && p.id !== product.id)
     .slice(0, 4);
 
   return (
-    <div className="container" style={{ padding: '32px 16px 64px 16px' }}>
-      {/* Breadcrumb */}
-      <nav style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        fontSize: '0.85rem',
-        color: 'var(--color-muted-text)',
-        marginBottom: '24px'
-      }}>
-        <Link to="/">Home</Link>
-        <ChevronRight size={14} />
-        <Link to="/catalog">Sarees</Link>
-        <ChevronRight size={14} />
-        <Link to={`/catalog?category=${product.category}`}>{product.categoryName || 'Collection'}</Link>
-        <ChevronRight size={14} />
-        <span style={{ color: 'var(--color-soft-charcoal)', fontWeight: 600 }}>{product.name}</span>
-      </nav>
+    <div style={{ backgroundColor: '#FAF7F2', paddingBottom: '70px', minHeight: '100vh' }}>
+      <div className="container" style={{ padding: '20px 16px 40px 16px' }}>
 
-      {/* Main Product Showcase: 2 Columns */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-        gap: '48px',
-        alignItems: 'start'
-      }}>
-        {/* Gallery Column */}
-        <div>
-          {/* Main Display Image */}
-          <div style={{
-            position: 'relative',
-            paddingTop: '125%', // 4:5 Aspect Ratio
-            borderRadius: 'var(--radius-lg)',
-            overflow: 'hidden',
-            backgroundColor: 'var(--color-secondary-surface)',
-            border: '1px solid var(--color-border)',
-            boxShadow: 'var(--shadow-card)'
-          }}>
-            <img
-              src={selectedImage}
-              alt={product.name}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover'
-              }}
-              onError={(e) => {
-                e.target.src = '/saree-paithani.png';
-              }}
-            />
+        {/* Breadcrumb Navigation */}
+        <nav
+          aria-label="Breadcrumb"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            fontSize: '12px',
+            color: 'var(--color-muted-text)',
+            marginBottom: '18px',
+            flexWrap: 'wrap'
+          }}
+        >
+          <Link to="/" style={{ color: 'var(--color-soft-charcoal)', fontWeight: 500 }}>Home</Link>
+          <ChevronRight size={12} />
+          <Link to={`/?category=${product.category}`} style={{ color: 'var(--color-soft-charcoal)', fontWeight: 500 }}>
+            {product.categoryName || 'Sarees'}
+          </Link>
+          <ChevronRight size={12} />
+          <span style={{ color: 'var(--color-primary-maroon)', fontWeight: 600 }}>
+            {product.name}
+          </span>
+        </nav>
 
-            {/* Badges */}
-            <div style={{ position: 'absolute', top: '16px', left: '16px', display: 'flex', gap: '8px' }}>
-              {product.isBestseller && (
-                <span className="badge badge-gold" style={{ fontSize: '0.8rem', padding: '4px 10px' }}>
-                  ★ Bestseller
-                </span>
-              )}
-              {discountPercent > 0 && (
-                <span className="badge" style={{ backgroundColor: '#256B45', color: '#FFF', fontSize: '0.8rem', padding: '4px 10px' }}>
-                  {discountPercent}% OFF
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Thumbnails */}
-          {product.images && product.images.length > 1 && (
-            <div style={{ display: 'flex', gap: '12px', marginTop: '16px', overflowX: 'auto', paddingBottom: '4px' }}>
-              {product.images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedImage(img)}
-                  style={{
-                    width: '72px',
-                    height: '90px',
-                    borderRadius: 'var(--radius-md)',
-                    overflow: 'hidden',
-                    border: selectedImage === img ? '2px solid var(--color-primary-maroon)' : '1px solid var(--color-border)',
-                    cursor: 'pointer',
-                    padding: 0,
-                    flexShrink: 0,
-                    opacity: selectedImage === img ? 1 : 0.7,
-                    transition: 'opacity 0.2s'
-                  }}
-                >
-                  <img
-                    src={img}
-                    alt={`Thumbnail ${idx + 1}`}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    onError={(e) => { e.target.src = '/saree-paithani.png'; }}
-                  />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Product Details Info Column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        {/* Main Product Showcase: Gallery Column + Details Column */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))',
+          gap: '32px',
+          alignItems: 'start'
+        }}>
+          {/* Gallery Column */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <span className="badge badge-neutral">{product.fabric}</span>
-              <span className="badge badge-neutral">{product.occasion}</span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--color-muted-text)', marginLeft: 'auto' }}>
-                SKU: {product.sku}
-              </span>
-            </div>
-
-            <h1 style={{ fontSize: 'clamp(1.5rem, 2.8vw, 2.1rem)', lineHeight: 1.25, marginBottom: '6px' }}>
-              {product.name}
-            </h1>
-
-
-
-
-            {product.rating && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}>
-                <span style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  backgroundColor: '#FDF6E2',
-                  border: '1px solid #D1B477',
-                  padding: '2px 8px',
-                  borderRadius: 'var(--radius-sm)',
-                  fontWeight: 700,
-                  color: '#7D5D1D'
-                }}>
-                  <Star size={13} fill="#7D5D1D" color="#7D5D1D" /> {product.rating}
-                </span>
-                <span style={{ color: 'var(--color-muted-text)' }}>
-                  ({product.reviewCount || 24} customer ratings)
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Pricing Box */}
-          <div style={{
-            backgroundColor: 'var(--color-warm-ivory)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-md)',
-            padding: '16px 20px'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <span style={{
-                fontSize: '2rem',
-                fontWeight: 700,
-                color: 'var(--color-primary-maroon)'
-              }}>
-                ₹{product.price.toLocaleString('en-IN')}
-              </span>
-              {product.compareAtPrice && product.compareAtPrice > product.price && (
-                <>
-                  <span style={{
-                    fontSize: '1.15rem',
-                    textDecoration: 'line-through',
-                    color: 'var(--color-muted-text)'
-                  }}>
-                    ₹{product.compareAtPrice.toLocaleString('en-IN')}
-                  </span>
-                  <span style={{
-                    color: 'var(--color-success)',
-                    fontWeight: 700,
-                    fontSize: '0.95rem'
-                  }}>
-                    Save ₹{(product.compareAtPrice - product.price).toLocaleString('en-IN')} ({discountPercent}% OFF)
-                  </span>
-                </>
-              )}
-            </div>
-            <p style={{ fontSize: '0.8rem', color: 'var(--color-muted-text)', marginTop: '4px' }}>
-              Inclusive of all taxes. Free Pan-India Delivery on this saree.
-            </p>
-          </div>
-
-          {/* Stock Availability */}
-          <div>
-            {isOutOfStock ? (
-              <span className="badge badge-error" style={{ fontSize: '0.85rem', padding: '6px 12px' }}>
-                Currently Sold Out
-              </span>
-            ) : isLowStock ? (
-              <span className="badge badge-error" style={{ fontSize: '0.85rem', padding: '6px 12px' }}>
-                ⚡ Only {product.stockQuantity} pieces remaining in stock!
-              </span>
-            ) : (
-              <span className="badge badge-success" style={{ fontSize: '0.85rem', padding: '6px 12px' }}>
-                ✓ In Stock ({product.stockQuantity} available)
-              </span>
-            )}
-          </div>
-
-          {/* Quantity Selector & Action Buttons */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', alignItems: 'center' }}>
+            {/* Main Stage Image */}
             <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-md)',
+              position: 'relative',
+              paddingTop: '120%', // Portrait ratio
+              borderRadius: 'var(--radius-sm)',
+              overflow: 'hidden',
               backgroundColor: '#FFFFFF',
-              height: '48px'
+              border: '1px solid rgba(197, 160, 89, 0.3)',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)'
             }}>
-              <button
-                type="button"
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              <img
+                src={selectedImage}
+                alt={product.name}
                 style={{
-                  width: '36px',
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
                   height: '100%',
-                  border: 'none',
-                  background: 'transparent',
-                  cursor: 'pointer',
-                  fontSize: '1.1rem'
+                  objectFit: 'cover'
                 }}
-              >
-                -
-              </button>
-              <span style={{ width: '40px', textAlign: 'center', fontWeight: 600 }}>{quantity}</span>
-              <button
-                type="button"
-                onClick={() => setQuantity(Math.min(product.stockQuantity || 10, quantity + 1))}
-                style={{
-                  width: '36px',
-                  height: '100%',
-                  border: 'none',
-                  background: 'transparent',
-                  cursor: 'pointer',
-                  fontSize: '1.1rem'
+                onError={(e) => {
+                  e.target.src = '/saree-paithani.png';
                 }}
-              >
-                +
-              </button>
-            </div>
-
-            <button
-              onClick={handleAddToCart}
-              disabled={isOutOfStock}
-              className="btn btn-secondary btn-lg"
-              style={{ flex: 1, minWidth: '160px' }}
-            >
-              {added ? (
-                <>
-                  <Check size={18} color="var(--color-success)" /> Added to Bag
-                </>
-              ) : (
-                <>
-                  <ShoppingBag size={18} /> Add to Cart
-                </>
-              )}
-            </button>
-
-            <button
-              onClick={handleBuyNow}
-              disabled={isOutOfStock}
-              className="btn btn-primary btn-lg"
-              style={{ flex: 1, minWidth: '160px' }}
-            >
-              Buy Now (Demo)
-            </button>
-          </div>
-
-          {/* WhatsApp Direct Enquiry */}
-          <a
-            href={`https://wa.me/919890076010?text=Hello%20Surat%20Sadi%20Center,%20I%20am%20interested%20in%20"${encodeURIComponent(product.name)}"%20(SKU:%20${product.sku})`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              padding: '12px',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid #25D366',
-              color: '#128C7E',
-              backgroundColor: '#F0FDF4',
-              fontWeight: 600,
-              fontSize: '0.9rem',
-              textDecoration: 'none'
-            }}
-          >
-            <Phone size={16} /> Request Video Call View on WhatsApp (9890076010)
-          </a>
-
-          {/* Delivery PIN Code Serviceability Checker */}
-          <div style={{
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-md)',
-            padding: '18px',
-            backgroundColor: '#FFFFFF'
-          }}>
-            <h4 style={{ fontSize: '0.9rem', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Truck size={16} color="var(--color-primary-maroon)" /> Pan-India Delivery Estimate
-            </h4>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="Enter 6-digit PIN code"
-                value={pincode}
-                onChange={(e) => setPincode(e.target.value)}
-                maxLength={6}
-                className="form-input"
-                style={{ height: '42px', maxWidth: '200px' }}
               />
-              <button
-                onClick={() => handleCheckPincode(pincode)}
-                disabled={checkingDelivery}
-                className="btn btn-secondary btn-sm"
-              >
-                {checkingDelivery ? 'Checking...' : 'Check Service'}
-              </button>
-            </div>
 
-            {deliveryResult && (
-              <div style={{ marginTop: '12px', fontSize: '0.85rem' }}>
-                {deliveryResult.isServiceable ? (
-                  <div style={{ color: 'var(--color-success)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <span style={{ fontWeight: 600 }}>
-                      ✓ Serviceable to {deliveryResult.state} ({deliveryResult.pincode})
-                    </span>
-                    <span style={{ color: 'var(--color-soft-charcoal)' }}>
-                      Estimated delivery: <strong>{deliveryResult.estimatedDays}</strong> from Dharashiv (PIN 413534).
-                    </span>
-                    <span style={{ color: 'var(--color-muted-text)' }}>
-                      Shipping: <strong>{deliveryResult.shippingFee === 0 ? 'FREE' : `₹${deliveryResult.shippingFee}`}</strong> • Cash on Delivery Available
-                    </span>
-                  </div>
-                ) : (
-                  <span style={{ color: 'var(--color-error)' }}>
-                    {deliveryResult.message}
+              {/* Floating Badges */}
+              <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', flexDirection: 'column', gap: '6px', zIndex: 2 }}>
+                {discountPercent > 0 && (
+                  <span style={{
+                    backgroundColor: 'var(--color-primary-maroon)',
+                    color: '#FFF',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    padding: '3px 8px',
+                    borderRadius: '2px'
+                  }}>
+                    {discountPercent}% OFF
+                  </span>
+                )}
+                {product.isBestseller && (
+                  <span style={{
+                    backgroundColor: '#FFFFFF',
+                    color: '#8A641B',
+                    border: '1px solid #D4AF37',
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    padding: '2px 8px',
+                    borderRadius: '2px'
+                  }}>
+                    ★ Bestseller
                   </span>
                 )}
               </div>
+
+              {/* Floating Wishlist Button */}
+              <button
+                onClick={() => toggleWishlist(product.id)}
+                style={{
+                  position: 'absolute',
+                  top: '12px',
+                  right: '12px',
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '999px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  border: '1px solid rgba(0, 0, 0, 0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  zIndex: 3,
+                  color: isWishlisted ? '#E02424' : '#666059'
+                }}
+                title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                aria-label="Wishlist"
+              >
+                <Heart size={18} fill={isWishlisted ? '#E02424' : 'none'} color={isWishlisted ? '#E02424' : 'currentColor'} />
+              </button>
+            </div>
+
+            {/* Thumbnails Strip */}
+            {product.images && product.images.length > 1 && (
+              <div style={{ display: 'flex', gap: '10px', marginTop: '12px', overflowX: 'auto', paddingBottom: '4px' }}>
+                {product.images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedImage(img)}
+                    style={{
+                      width: '68px',
+                      height: '84px',
+                      borderRadius: 'var(--radius-sm)',
+                      overflow: 'hidden',
+                      border: selectedImage === img ? '2px solid var(--color-primary-maroon)' : '1px solid var(--color-border)',
+                      cursor: 'pointer',
+                      padding: 0,
+                      flexShrink: 0,
+                      opacity: selectedImage === img ? 1 : 0.65,
+                      transition: 'all 0.2s ease',
+                      backgroundColor: '#FFFFFF'
+                    }}
+                    aria-label={`Show view ${idx + 1}`}
+                  >
+                    <img
+                      src={img}
+                      alt={`View ${idx + 1}`}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => { e.target.src = '/saree-paithani.png'; }}
+                    />
+                  </button>
+                ))}
+              </div>
             )}
           </div>
 
-          {/* Specifications Table */}
+          {/* Product Details Info Column */}
           <div style={{
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-md)',
-            overflow: 'hidden'
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            backgroundColor: '#FFFFFF',
+            padding: '24px',
+            borderRadius: 'var(--radius-sm)',
+            border: '1px solid rgba(197, 160, 89, 0.25)',
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.04)'
           }}>
-            <h4 style={{
-              backgroundColor: 'var(--color-secondary-surface)',
-              padding: '12px 16px',
-              fontSize: '0.95rem',
-              margin: 0
+            {/* Header info */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '6px' }}>
+                <span style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  color: 'var(--color-antique-gold)'
+                }}>
+                  {product.fabric} • {product.categoryName || 'Saree'}
+                </span>
+                <span style={{ fontSize: '11px', color: 'var(--color-muted-text)' }}>
+                  SKU: <strong>{product.sku || product.id}</strong>
+                </span>
+              </div>
+
+              <h1 style={{
+                fontSize: 'clamp(1.4rem, 2.5vw, 1.85rem)',
+                lineHeight: 1.25,
+                margin: '0 0 4px 0',
+                color: 'var(--color-soft-charcoal)',
+                fontFamily: 'var(--font-brand-display)',
+                fontWeight: 700
+              }}>
+                {product.name}
+              </h1>
+
+              {product.marathiName && (
+                <p style={{
+                  fontSize: '14px',
+                  color: 'var(--color-primary-maroon)',
+                  margin: '0 0 10px 0',
+                  fontWeight: 600
+                }}>
+                  {product.marathiName}
+                </p>
+              )}
+
+              {/* Rating */}
+              {product.rating && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px' }}>
+                  <span style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '3px',
+                    backgroundColor: '#FDF6E2',
+                    border: '1px solid #D4AF37',
+                    padding: '2px 8px',
+                    borderRadius: '2px',
+                    fontWeight: 700,
+                    color: '#8A641B'
+                  }}>
+                    <Star size={12} fill="#8A641B" color="#8A641B" /> {product.rating}
+                  </span>
+                  <span style={{ color: 'var(--color-muted-text)' }}>
+                    ({product.reviewCount || 24} customer reviews)
+                  </span>
+                  <span style={{ color: 'var(--color-border)' }}>|</span>
+                  <button
+                    onClick={handleShare}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--color-muted-text)',
+                      fontSize: '11px',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    <Share2 size={12} /> {shared ? 'Link Copied!' : 'Share'}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Pricing Box */}
+            <div style={{
+              backgroundColor: '#FAF7F2',
+              border: '1px solid rgba(197, 160, 89, 0.3)',
+              borderRadius: 'var(--radius-sm)',
+              padding: '14px 18px'
             }}>
-              Saree Specifications & Fabric Details
-            </h4>
-            <table className="table" style={{ margin: 0 }}>
-              <tbody>
-                <tr>
-                  <td style={{ width: '35%', color: 'var(--color-muted-text)', fontWeight: 500 }}>Fabric / Material</td>
-                  <td style={{ fontWeight: 600 }}>{product.fabric}</td>
-                </tr>
-                <tr>
-                  <td style={{ color: 'var(--color-muted-text)', fontWeight: 500 }}>Colour / Shade</td>
-                  <td>{product.colour}</td>
-                </tr>
-                <tr>
-                  <td style={{ color: 'var(--color-muted-text)', fontWeight: 500 }}>Occasion</td>
-                  <td>{product.occasion}</td>
-                </tr>
-                <tr>
-                  <td style={{ color: 'var(--color-muted-text)', fontWeight: 500 }}>Blouse Piece</td>
-                  <td>{product.blousePiece || 'Included (0.8m pure silk)'}</td>
-                </tr>
-                <tr>
-                  <td style={{ color: 'var(--color-muted-text)', fontWeight: 500 }}>Saree Length</td>
-                  <td>{product.length || '6.3 Meters (including blouse piece)'}</td>
-                </tr>
-                <tr>
-                  <td style={{ color: 'var(--color-muted-text)', fontWeight: 500 }}>Origin Cluster</td>
-                  <td>Yeola / Varanasi Handloom Weavers</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', flexWrap: 'wrap' }}>
+                <span style={{
+                  fontSize: '2rem',
+                  fontWeight: 700,
+                  color: 'var(--color-primary-maroon)',
+                  fontFamily: 'var(--font-brand-display)'
+                }}>
+                  ₹{product.price.toLocaleString('en-IN')}
+                </span>
 
-          {/* Description & Care Instructions */}
-          <div>
-            <h4 style={{ fontSize: '1rem', marginBottom: '8px' }}>Description</h4>
-            <p style={{ color: 'var(--color-soft-charcoal)', lineHeight: 1.6, fontSize: '0.95rem' }}>
-              {product.description}
-            </p>
-          </div>
+                {product.compareAtPrice && product.compareAtPrice > product.price && (
+                  <>
+                    <span style={{
+                      fontSize: '1.1rem',
+                      textDecoration: 'line-through',
+                      color: 'var(--color-muted-light)'
+                    }}>
+                      ₹{product.compareAtPrice.toLocaleString('en-IN')}
+                    </span>
+                    <span style={{
+                      color: 'var(--color-success)',
+                      fontWeight: 700,
+                      fontSize: '13px'
+                    }}>
+                      Save ₹{(product.compareAtPrice - product.price).toLocaleString('en-IN')} ({discountPercent}% OFF)
+                    </span>
+                  </>
+                )}
+              </div>
+              <p style={{ fontSize: '11px', color: 'var(--color-muted-text)', margin: '4px 0 0 0' }}>
+                Inclusive of all taxes. Free Pan-India Doorstep Delivery on orders above ₹1,499.
+              </p>
+            </div>
 
-          <div style={{
-            backgroundColor: '#FAF7F2',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-md)',
-            padding: '16px'
-          }}>
-            <h4 style={{ fontSize: '0.9rem', marginBottom: '4px', color: 'var(--color-primary-maroon)' }}>
-              Handloom Care & Muslin Preservation
-            </h4>
-            <p style={{ fontSize: '0.85rem', color: 'var(--color-soft-charcoal)', lineHeight: 1.5 }}>
-              {product.careInstructions || 'Dry clean recommended. Preserve in a breathable cotton or muslin bag. Air occasionally.'}
-            </p>
+            {/* Stock Availability */}
+            <div>
+              {isOutOfStock ? (
+                <span style={{
+                  backgroundColor: '#FDF2F2',
+                  color: '#B42318',
+                  border: '1px solid rgba(180, 35, 24, 0.3)',
+                  padding: '4px 10px',
+                  borderRadius: '2px',
+                  fontSize: '12px',
+                  fontWeight: 700
+                }}>
+                  Currently Out of Stock
+                </span>
+              ) : isLowStock ? (
+                <span style={{
+                  backgroundColor: '#FFFBEB',
+                  color: '#B45309',
+                  border: '1px solid #FCD34D',
+                  padding: '4px 10px',
+                  borderRadius: '2px',
+                  fontSize: '12px',
+                  fontWeight: 700
+                }}>
+                  ⚡ Only {product.stockQuantity} piece{product.stockQuantity > 1 ? 's' : ''} remaining in stock!
+                </span>
+              ) : (
+                <span style={{
+                  backgroundColor: '#EAF7EE',
+                  color: '#1E7E45',
+                  border: '1px solid rgba(30, 126, 69, 0.3)',
+                  padding: '4px 10px',
+                  borderRadius: '2px',
+                  fontSize: '12px',
+                  fontWeight: 600
+                }}>
+                  ✓ In Stock ({product.stockQuantity} available at Dharashiv Showroom)
+                </span>
+              )}
+            </div>
+
+            {/* Quantity Selector & Shopping Actions */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
+              {/* Qty Counter */}
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-sm)',
+                backgroundColor: '#FFFFFF',
+                height: '46px'
+              }}>
+                <button
+                  type="button"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  style={{
+                    width: '36px',
+                    height: '100%',
+                    border: 'none',
+                    background: 'transparent',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 600
+                  }}
+                  aria-label="Decrease quantity"
+                >
+                  -
+                </button>
+                <span style={{ width: '38px', textAlign: 'center', fontWeight: 700, fontSize: '14px' }}>
+                  {quantity}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setQuantity(Math.min(product.stockQuantity || 10, quantity + 1))}
+                  style={{
+                    width: '36px',
+                    height: '100%',
+                    border: 'none',
+                    background: 'transparent',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 600
+                  }}
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+              </div>
+
+              {/* Add to Cart */}
+              <button
+                onClick={handleAddToCart}
+                disabled={isOutOfStock}
+                className="btn btn-secondary btn-lg"
+                style={{ flex: 1, minWidth: '150px', height: '46px', minHeight: '46px' }}
+              >
+                {added ? (
+                  <>
+                    <Check size={16} color="var(--color-success)" /> Added to Bag
+                  </>
+                ) : (
+                  <>
+                    <ShoppingBag size={16} /> Add to Cart
+                  </>
+                )}
+              </button>
+
+              {/* Buy Now */}
+              <button
+                onClick={handleBuyNow}
+                disabled={isOutOfStock}
+                className="btn btn-primary btn-lg"
+                style={{ flex: 1, minWidth: '150px', height: '46px', minHeight: '46px' }}
+              >
+                Buy Now
+              </button>
+            </div>
+
+            {/* Direct WhatsApp Consultation / Order Link */}
+            <a
+              href={getWhatsAppProductEnquiryUrl(product)}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                padding: '12px 16px',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid #25D366',
+                color: '#128C7E',
+                backgroundColor: '#F0FDF4',
+                fontWeight: 600,
+                fontSize: '13px',
+                textDecoration: 'none'
+              }}
+              title="Enquire on WhatsApp with prefilled message"
+            >
+              <MessageCircle size={18} color="#25D366" />
+              <span>Enquire / Request Video Call on WhatsApp (+91 {STORE_CONFIG.phone})</span>
+            </a>
+
+            {/* Delivery Estimator Checker */}
+            <div style={{
+              border: '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-sm)',
+              padding: '14px',
+              backgroundColor: '#FAF7F2'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, marginBottom: '8px' }}>
+                <Truck size={16} color="var(--color-primary-maroon)" />
+                <span>Check Delivery to Your PIN Code</span>
+              </div>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  placeholder="Enter 6-digit PIN"
+                  value={pincode}
+                  onChange={(e) => setPincode(e.target.value)}
+                  className="form-input"
+                  style={{ height: '38px', minHeight: '38px', maxWidth: '170px', fontSize: '13px' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleCheckPincode(pincode)}
+                  disabled={checkingDelivery}
+                  className="btn btn-secondary btn-sm"
+                  style={{ height: '38px', minHeight: '38px' }}
+                >
+                  {checkingDelivery ? 'Checking...' : 'Check'}
+                </button>
+              </div>
+
+              {deliveryResult && (
+                <div style={{ marginTop: '10px', fontSize: '12px' }}>
+                  {deliveryResult.isServiceable ? (
+                    <div style={{ color: 'var(--color-success)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <span style={{ fontWeight: 600 }}>
+                        ✓ Express Shipping to {deliveryResult.state} ({deliveryResult.pincode})
+                      </span>
+                      <span style={{ color: 'var(--color-soft-charcoal)' }}>
+                        Delivery estimate: <strong>{deliveryResult.estimatedDays}</strong> from Dharashiv (PIN 413534).
+                      </span>
+                      <span style={{ color: 'var(--color-muted-text)' }}>
+                        Cash on Delivery available pan-India.
+                      </span>
+                    </div>
+                  ) : (
+                    <span style={{ color: 'var(--color-error)' }}>
+                      {deliveryResult.message}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Saree Specifications Table */}
+            <div style={{
+              border: '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-sm)',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                backgroundColor: 'var(--color-cream-surface)',
+                padding: '10px 14px',
+                fontSize: '13px',
+                fontWeight: 700,
+                color: 'var(--color-primary-maroon)',
+                letterSpacing: '0.02em'
+              }}>
+                Saree Details & Product Specifications
+              </div>
+              <table className="table" style={{ margin: 0 }}>
+                <tbody>
+                  <tr>
+                    <td style={{ width: '38%', color: 'var(--color-muted-text)', fontSize: '12px' }}>Fabric / Weave</td>
+                    <td style={{ fontWeight: 600, fontSize: '12px' }}>{product.fabric}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ color: 'var(--color-muted-text)', fontSize: '12px' }}>Primary Colour</td>
+                    <td style={{ fontSize: '12px' }}>{product.colour}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ color: 'var(--color-muted-text)', fontSize: '12px' }}>Occasion</td>
+                    <td style={{ fontSize: '12px' }}>{product.occasion}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ color: 'var(--color-muted-text)', fontSize: '12px' }}>Blouse Piece</td>
+                    <td style={{ fontSize: '12px' }}>{product.blousePiece || 'Included (0.8m pure silk running blouse)'}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ color: 'var(--color-muted-text)', fontSize: '12px' }}>Saree Length</td>
+                    <td style={{ fontSize: '12px' }}>{product.length || '6.3 Meters (including blouse piece)'}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ color: 'var(--color-muted-text)', fontSize: '12px' }}>Weaving Cluster</td>
+                    <td style={{ fontSize: '12px' }}>Yeola / Varanasi Handloom Weavers</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Description & Preservation */}
+            <div>
+              <h4 style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--color-antique-gold)', margin: '0 0 6px 0' }}>
+                Description
+              </h4>
+              <p style={{ color: 'var(--color-soft-charcoal)', lineHeight: 1.6, fontSize: '13px', margin: 0 }}>
+                {product.description}
+              </p>
+            </div>
+
+            <div style={{
+              backgroundColor: '#FFF9ED',
+              border: '1px solid #E6D2A8',
+              borderRadius: 'var(--radius-sm)',
+              padding: '12px'
+            }}>
+              <strong style={{ fontSize: '12px', color: '#8A641B' }}>Care & Storage Guidelines</strong>
+              <p style={{ fontSize: '12px', color: '#524328', margin: '4px 0 0 0', lineHeight: 1.5 }}>
+                {product.careInstructions || 'Dry clean only. Preserve wrapped in a soft muslin cloth. Never spray perfume directly on metallic zari threads.'}
+              </p>
+            </div>
+
           </div>
         </div>
+
+        {/* Related Sarees Section */}
+        {relatedProducts.length > 0 && (
+          <section style={{ marginTop: '48px', paddingTop: '28px', borderTop: '1px solid rgba(197, 160, 89, 0.25)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <div>
+                <h2 style={{ fontSize: 'clamp(1.2rem, 2.5vw, 1.5rem)', margin: 0, color: 'var(--color-primary-maroon)' }}>
+                  Similar Handwoven Sarees
+                </h2>
+                <p style={{ fontSize: '12px', color: 'var(--color-muted-text)', margin: '2px 0 0 0' }}>
+                  Handpicked alternatives from the same weaver lineage
+                </p>
+              </div>
+              <Link to={`/?category=${product.category}`} style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-primary-maroon)' }}>
+                View All →
+              </Link>
+            </div>
+
+            <div className="mobile-grid-2col">
+              {relatedProducts.map(p => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </section>
+        )}
+
       </div>
 
-      {/* Related Sarees */}
-      {relatedProducts.length > 0 && (
-        <section style={{ marginTop: '56px', paddingTop: '36px', borderTop: '1px solid var(--color-border)' }}>
-          <h2 style={{ fontSize: 'clamp(1.35rem, 3vw, 1.75rem)', marginBottom: '20px' }}>
-            Similar Handwoven Sarees
-          </h2>
-          <div className="mobile-grid-2col">
-            {relatedProducts.map(p => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Mobile Sticky Bottom Action Bar (Fixed above MobileBottomNav) */}
+      {/* Mobile Sticky Bottom Floating Action Bar */}
       <div
         className="mobile-only"
         style={{
@@ -520,38 +689,37 @@ export const ProductDetails = () => {
           left: 0,
           right: 0,
           backgroundColor: 'rgba(255, 255, 255, 0.98)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
+          backdropFilter: 'blur(8px)',
           borderTop: '1px solid var(--color-border)',
-          padding: '10px 14px',
+          padding: '8px 12px',
           zIndex: 950,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '10px',
-          boxShadow: '0 -4px 16px rgba(0, 0, 0, 0.08)'
+          gap: '8px',
+          boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.08)'
         }}
       >
         <div>
-          <div style={{ fontSize: '11px', color: 'var(--color-muted-text)' }}>Price</div>
-          <div style={{ fontSize: '17px', fontWeight: 700, color: 'var(--color-primary-maroon)', lineHeight: 1.1 }}>
+          <div style={{ fontSize: '10px', color: 'var(--color-muted-text)' }}>Price</div>
+          <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--color-primary-maroon)', lineHeight: 1.1 }}>
             ₹{product.price.toLocaleString('en-IN')}
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '8px', flex: 1, justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', gap: '6px', flex: 1, justifyContent: 'flex-end' }}>
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
             className="btn btn-secondary btn-sm"
-            style={{ minHeight: '40px', padding: '0 12px', fontSize: '12px', flex: 1 }}
+            style={{ height: '38px', minHeight: '38px', padding: '0 10px', fontSize: '11px', flex: 1 }}
           >
-            {added ? '✓ Added to Cart' : '+ Add to Cart'}
+            {added ? '✓ Added' : '+ Add to Bag'}
           </button>
           <button
             onClick={handleBuyNow}
             disabled={isOutOfStock}
             className="btn btn-primary btn-sm"
-            style={{ minHeight: '40px', padding: '0 14px', fontSize: '12px', flex: 1 }}
+            style={{ height: '38px', minHeight: '38px', padding: '0 12px', fontSize: '11px', flex: 1 }}
           >
             Buy Now
           </button>

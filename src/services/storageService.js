@@ -4,11 +4,11 @@
 import { INITIAL_CATEGORIES, INITIAL_PRODUCTS, INITIAL_ORDERS, DEMO_USERS } from '../data/mockData.js';
 
 const KEYS = {
-  PRODUCTS: 'ssc_products_v1',
-  CATEGORIES: 'ssc_categories_v1',
-  CART: 'ssc_cart_v1',
-  ORDERS: 'ssc_orders_v1',
-  CURRENT_USER: 'ssc_current_user_v1'
+  PRODUCTS: 'ssc_products_v3',
+  CATEGORIES: 'ssc_categories_v3',
+  CART: 'ssc_cart_v3',
+  ORDERS: 'ssc_orders_v3',
+  CURRENT_USER: 'ssc_current_user_v3'
 };
 
 // Safe storage getter with fallback
@@ -119,6 +119,30 @@ export const storageService = {
     return getFromStorage(KEYS.CATEGORIES, INITIAL_CATEGORIES);
   },
 
+  saveCategory(categoryData) {
+    const categories = this.getCategories();
+    let updated;
+    if (categoryData.id) {
+      updated = categories.map(c => (c.id === categoryData.id ? { ...c, ...categoryData } : c));
+    } else {
+      const newCat = {
+        ...categoryData,
+        id: `cat-${Date.now()}`,
+        slug: categoryData.slug || categoryData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+      };
+      updated = [...categories, newCat];
+    }
+    setToStorage(KEYS.CATEGORIES, updated);
+    return updated;
+  },
+
+  deleteCategory(categoryId) {
+    const categories = this.getCategories();
+    const updated = categories.filter(c => c.id !== categoryId && c.slug !== 'all');
+    setToStorage(KEYS.CATEGORIES, updated);
+    return updated;
+  },
+
   // CART
   getCart() {
     return getFromStorage(KEYS.CART, []);
@@ -152,7 +176,7 @@ export const storageService = {
           slug: product.slug,
           price: product.price,
           compareAtPrice: product.compareAtPrice,
-          image: product.images[0] || '/saree-paithani.png',
+          image: product.images?.[0] || '/saree-paithani.png',
           fabric: product.fabric,
           colour: product.colour,
           quantity: Math.min(quantity, product.stockQuantity || 99)
@@ -205,13 +229,15 @@ export const storageService = {
     const randomHex = Math.random().toString(36).substring(2, 6).toUpperCase();
     const orderNumber = `SSC-${dateStr}-${randomHex}`;
 
+    const isOnlinePayment = orderPayload.paymentMethod?.includes('Online') || orderPayload.paymentMethod?.includes('UPI');
+
     const newOrder = {
       ...orderPayload,
       id: orderNumber,
       orderNumber,
       createdAt: now.toISOString(),
       orderStatus: 'Confirmed',
-      paymentStatus: orderPayload.paymentMethod?.includes('Cash') ? 'Pending COD Verification' : 'Demo Verification',
+      paymentStatus: isOnlinePayment ? 'Paid (Demo Simulated)' : 'Pending COD Verification',
       trackingNumber: `TRK-MH-${Math.floor(100000 + Math.random() * 900000)}`
     };
 

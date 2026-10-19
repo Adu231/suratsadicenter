@@ -1,14 +1,17 @@
 import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Sparkles, Search, ShoppingBag, PhoneCall } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Home, Sparkles, Heart, ShoppingBag, PhoneCall } from 'lucide-react';
 import { useCart } from '../context/CartContext.jsx';
+import { useWishlist } from '../context/WishlistContext.jsx';
+import { STORE_CONFIG } from '../config/storeConfig.js';
 
 export const MobileBottomNav = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { itemCount, openDrawer } = useCart();
+  const { wishlistCount } = useWishlist();
 
   const currentPath = location.pathname;
+  const isWishlistActive = location.search.includes('filter=wishlist');
 
   return (
     <nav
@@ -21,17 +24,17 @@ export const MobileBottomNav = () => {
         right: 0,
         height: 'calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px))',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-        backgroundColor: 'rgba(255, 255, 255, 0.96)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        borderTop: '1px solid var(--color-border)',
-        boxShadow: 'var(--shadow-bottom-nav)',
+        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        borderTop: '1px solid rgba(197, 160, 89, 0.3)',
+        boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.06)',
         zIndex: 1000,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-around',
-        paddingLeft: '6px',
-        paddingRight: '6px'
+        paddingLeft: '4px',
+        paddingRight: '4px'
       }}
     >
       {/* 1. Home */}
@@ -42,74 +45,85 @@ export const MobileBottomNav = () => {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '3px',
+          gap: '2px',
           flex: 1,
           height: '100%',
-          color: currentPath === '/' ? 'var(--color-primary-maroon)' : 'var(--color-muted-text)',
-          fontWeight: currentPath === '/' ? 700 : 500,
+          color: (currentPath === '/' && !isWishlistActive) ? 'var(--color-primary-maroon)' : 'var(--color-muted-text)',
+          fontWeight: (currentPath === '/' && !isWishlistActive) ? 700 : 500,
           fontSize: '11px',
-          textDecoration: 'none',
-          transition: 'color var(--transition-fast)'
+          textDecoration: 'none'
         }}
       >
-        <Home size={21} strokeWidth={currentPath === '/' ? 2.4 : 1.8} />
-        <span>Home</span>
+        <Home size={19} strokeWidth={(currentPath === '/' && !isWishlistActive) ? 2.4 : 1.8} />
+        <span>Shop</span>
       </Link>
 
-      {/* 2. Sarees / Catalog */}
+      {/* 2. Paithani Collections */}
       <Link
-        to="/catalog"
+        to="/?category=paithani-sarees"
         style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '3px',
+          gap: '2px',
           flex: 1,
           height: '100%',
-          color: currentPath === '/catalog' ? 'var(--color-primary-maroon)' : 'var(--color-muted-text)',
-          fontWeight: currentPath === '/catalog' ? 700 : 500,
+          color: location.search.includes('category=paithani-sarees') ? 'var(--color-primary-maroon)' : 'var(--color-muted-text)',
+          fontWeight: location.search.includes('category=paithani-sarees') ? 700 : 500,
           fontSize: '11px',
-          textDecoration: 'none',
-          transition: 'color var(--transition-fast)'
+          textDecoration: 'none'
         }}
       >
-        <Sparkles size={21} strokeWidth={currentPath === '/catalog' ? 2.4 : 1.8} />
-        <span>Sarees</span>
+        <Sparkles size={19} strokeWidth={1.8} />
+        <span>Paithani</span>
       </Link>
 
-      {/* 3. Search Quick Action */}
-      <button
-        onClick={() => {
-          navigate('/catalog');
-          // Focus search after short delay
-          setTimeout(() => {
-            const el = document.getElementById('catalog-search-input') || document.querySelector('input[type="text"]');
-            if (el) el.focus();
-          }, 150);
-        }}
+      {/* 3. Wishlist */}
+      <Link
+        to="/?filter=wishlist"
         style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '3px',
+          gap: '2px',
           flex: 1,
           height: '100%',
-          background: 'transparent',
-          border: 'none',
-          cursor: 'pointer',
-          color: 'var(--color-muted-text)',
-          fontWeight: 500,
+          color: isWishlistActive ? '#E02424' : 'var(--color-muted-text)',
+          fontWeight: isWishlistActive ? 700 : 500,
           fontSize: '11px',
-          padding: 0
+          textDecoration: 'none',
+          position: 'relative'
         }}
       >
-        <Search size={21} strokeWidth={1.8} />
-        <span>Search</span>
-      </button>
+        <div style={{ position: 'relative' }}>
+          <Heart size={19} fill={isWishlistActive ? '#E02424' : 'none'} strokeWidth={1.8} />
+          {wishlistCount > 0 && (
+            <span style={{
+              position: 'absolute',
+              top: '-3px',
+              right: '-6px',
+              backgroundColor: '#E02424',
+              color: '#FFFFFF',
+              borderRadius: '999px',
+              minWidth: '15px',
+              height: '15px',
+              padding: '0 3px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '9px',
+              fontWeight: 700
+            }}>
+              {wishlistCount}
+            </span>
+          )}
+        </div>
+        <span>Wishlist</span>
+      </Link>
 
-      {/* 4. Cart / Bag with Badge */}
+      {/* 4. Cart Bag with Live Count */}
       <button
         onClick={openDrawer}
         style={{
@@ -117,57 +131,57 @@ export const MobileBottomNav = () => {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '3px',
+          gap: '2px',
           flex: 1,
           height: '100%',
           background: 'transparent',
           border: 'none',
           cursor: 'pointer',
-          color: currentPath === '/cart' ? 'var(--color-primary-maroon)' : 'var(--color-muted-text)',
-          fontWeight: currentPath === '/cart' ? 700 : 500,
+          color: itemCount > 0 ? 'var(--color-primary-maroon)' : 'var(--color-muted-text)',
+          fontWeight: itemCount > 0 ? 700 : 500,
           fontSize: '11px',
           position: 'relative',
           padding: 0
         }}
+        aria-label="Open Cart"
       >
         <div style={{ position: 'relative' }}>
-          <ShoppingBag size={21} strokeWidth={itemCount > 0 ? 2.2 : 1.8} />
+          <ShoppingBag size={19} strokeWidth={itemCount > 0 ? 2.2 : 1.8} />
           {itemCount > 0 && (
             <span
               style={{
                 position: 'absolute',
-                top: '-4px',
+                top: '-3px',
                 right: '-7px',
                 backgroundColor: 'var(--color-primary-maroon)',
                 color: 'var(--color-white)',
                 borderRadius: '999px',
-                minWidth: '17px',
-                height: '17px',
+                minWidth: '16px',
+                height: '16px',
                 padding: '0 4px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '10px',
-                fontWeight: 700,
-                boxShadow: '0 1px 4px rgba(147, 26, 45, 0.4)'
+                fontWeight: 700
               }}
             >
               {itemCount}
             </span>
           )}
         </div>
-        <span>Cart</span>
+        <span>Bag</span>
       </button>
 
-      {/* 5. Direct Call to Store (9890076010) */}
+      {/* 5. Direct Call to Store */}
       <a
-        href="tel:9890076010"
+        href={`tel:${STORE_CONFIG.phone}`}
         style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '3px',
+          gap: '2px',
           flex: 1,
           height: '100%',
           color: 'var(--color-primary-maroon)',
@@ -175,21 +189,21 @@ export const MobileBottomNav = () => {
           fontSize: '11px',
           textDecoration: 'none'
         }}
-        title="Call Surat Sadi Center at 9890076010"
+        title={`Call Surat Sadi Center at ${STORE_CONFIG.displayPhone}`}
       >
         <div style={{
-          width: '28px',
-          height: '28px',
-          borderRadius: 'var(--radius-full)',
+          width: '26px',
+          height: '26px',
+          borderRadius: '999px',
           backgroundColor: 'var(--color-maroon-light)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           color: 'var(--color-primary-maroon)'
         }}>
-          <PhoneCall size={15} strokeWidth={2.2} />
+          <PhoneCall size={14} strokeWidth={2} />
         </div>
-        <span style={{ fontSize: '10px' }}>Call Us</span>
+        <span>Call</span>
       </a>
 
       {/* Mobile only media query */}

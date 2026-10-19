@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { X, Trash2, ShoppingBag, ArrowRight, Plus, Minus, Truck } from 'lucide-react';
+import { X, Trash2, ShoppingBag, ArrowRight, Plus, Minus, Truck, MessageCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext.jsx';
+import { STORE_CONFIG, getWhatsAppCartOrderUrl } from '../config/storeConfig.js';
 
 export const CartDrawer = () => {
   const {
@@ -19,7 +20,7 @@ export const CartDrawer = () => {
 
   if (!isDrawerOpen) return null;
 
-  const freeShippingThreshold = 1499;
+  const freeShippingThreshold = STORE_CONFIG.freeShippingThreshold || 1499;
   const progressPercent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
   const remainingForFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
 
@@ -27,6 +28,8 @@ export const CartDrawer = () => {
     closeDrawer();
     navigate('/checkout');
   };
+
+  const whatsappCartUrl = getWhatsAppCartOrderUrl(items, total);
 
   return (
     <div style={{
@@ -51,7 +54,7 @@ export const CartDrawer = () => {
       <div style={{
         position: 'relative',
         width: '100%',
-        maxWidth: '440px',
+        maxWidth: '430px',
         height: '100%',
         backgroundColor: '#FFFFFF',
         display: 'flex',
@@ -61,16 +64,18 @@ export const CartDrawer = () => {
       }}>
         {/* Drawer Header */}
         <div style={{
-          padding: '18px 24px',
+          padding: '16px 20px',
           borderBottom: '1px solid var(--color-border)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          backgroundColor: 'var(--color-warm-ivory)'
+          backgroundColor: '#FAF7F2'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <ShoppingBag size={20} color="var(--color-primary-maroon)" />
-            <h3 style={{ fontSize: '1.15rem', margin: 0 }}>Shopping Cart ({itemCount})</h3>
+            <ShoppingBag size={18} color="var(--color-primary-maroon)" />
+            <h3 style={{ fontSize: '1.1rem', margin: 0, fontWeight: 700 }}>
+              Shopping Bag ({itemCount})
+            </h3>
           </div>
           <button
             onClick={closeDrawer}
@@ -81,34 +86,35 @@ export const CartDrawer = () => {
               color: 'var(--color-soft-charcoal)',
               padding: '4px'
             }}
+            aria-label="Close cart drawer"
           >
             <X size={20} />
           </button>
         </div>
 
-        {/* Free Shipping Progress Indicator */}
+        {/* Free Shipping Progress */}
         <div style={{
-          padding: '12px 24px',
-          backgroundColor: '#FAF7F2',
-          borderBottom: '1px solid var(--color-border)'
+          padding: '10px 20px',
+          backgroundColor: '#FFFDF9',
+          borderBottom: '1px solid rgba(197, 160, 89, 0.2)'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', marginBottom: '6px' }}>
-            <Truck size={14} color="var(--color-primary-maroon)" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', marginBottom: '5px' }}>
+            <Truck size={13} color="var(--color-primary-maroon)" />
             <span>
               {remainingForFreeShipping === 0 ? (
                 <strong style={{ color: 'var(--color-success)' }}>
-                  🎉 Congratulations! You qualify for FREE Pan-India Shipping!
+                  🎉 You unlocked FREE Pan-India Delivery!
                 </strong>
               ) : (
                 <span>
-                  Add <strong>₹{remainingForFreeShipping.toLocaleString('en-IN')}</strong> more for <strong>FREE Pan-India Delivery</strong>!
+                  Add <strong>₹{remainingForFreeShipping.toLocaleString('en-IN')}</strong> more for <strong>FREE Pan-India Delivery</strong>
                 </span>
               )}
             </span>
           </div>
           <div style={{
-            height: '6px',
-            backgroundColor: '#E3DACE',
+            height: '5px',
+            backgroundColor: '#EAE2D5',
             borderRadius: '999px',
             overflow: 'hidden'
           }}>
@@ -125,7 +131,7 @@ export const CartDrawer = () => {
         <div style={{
           flex: 1,
           overflowY: 'auto',
-          padding: '16px 24px'
+          padding: '16px 20px'
         }}>
           {items.length === 0 ? (
             <div style={{
@@ -133,30 +139,30 @@ export const CartDrawer = () => {
               padding: '48px 16px',
               color: 'var(--color-muted-text)'
             }}>
-              <ShoppingBag size={48} strokeWidth={1.2} style={{ marginBottom: '16px', opacity: 0.5 }} />
-              <h4>Your cart is empty</h4>
-              <p style={{ fontSize: '0.875rem', marginTop: '8px', marginBottom: '24px' }}>
-                Discover handwoven Paithani, Banarasi, and authentic bridal sarees.
+              <ShoppingBag size={44} strokeWidth={1.2} style={{ marginBottom: '14px', opacity: 0.4 }} />
+              <h4 style={{ color: 'var(--color-primary-maroon)' }}>Your cart is empty</h4>
+              <p style={{ fontSize: '13px', marginTop: '6px', marginBottom: '20px' }}>
+                Discover pure silk Paithani, Banarasi, and authentic bridal sarees.
               </p>
               <button
                 onClick={() => {
                   closeDrawer();
-                  navigate('/catalog');
+                  navigate('/');
                 }}
-                className="btn btn-primary"
+                className="btn btn-primary btn-sm"
               >
                 Browse Sarees
               </button>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {items.map(item => (
                 <div
                   key={item.id}
                   style={{
                     display: 'flex',
-                    gap: '14px',
-                    paddingBottom: '16px',
+                    gap: '12px',
+                    paddingBottom: '14px',
                     borderBottom: '1px solid var(--color-border)'
                   }}
                 >
@@ -164,17 +170,18 @@ export const CartDrawer = () => {
                     src={item.image}
                     alt={item.name}
                     style={{
-                      width: '74px',
-                      height: '92px',
+                      width: '68px',
+                      height: '86px',
                       objectFit: 'cover',
-                      borderRadius: 'var(--radius-md)',
+                      borderRadius: 'var(--radius-sm)',
                       backgroundColor: 'var(--color-secondary-surface)'
                     }}
+                    onError={(e) => { e.target.src = '/saree-paithani.png'; }}
                   />
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <h4 style={{ fontSize: '0.9rem', lineHeight: 1.3, marginBottom: '2px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '6px' }}>
+                        <h4 style={{ fontSize: '13px', lineHeight: 1.3, margin: '0 0 2px 0', fontWeight: 600 }}>
                           {item.name}
                         </h4>
                         <button
@@ -188,16 +195,16 @@ export const CartDrawer = () => {
                           }}
                           title="Remove item"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={15} />
                         </button>
                       </div>
-                      
-                      <p style={{ fontSize: '0.75rem', color: 'var(--color-muted-text)', marginTop: '2px' }}>
-                        {item.fabric} • {item.colour}
+
+                      <p style={{ fontSize: '11px', color: 'var(--color-muted-text)', margin: 0 }}>
+                        {item.fabric} {item.colour ? `• ${item.colour}` : ''}
                       </p>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px' }}>
                       {/* Quantity Controls */}
                       <div style={{
                         display: 'inline-flex',
@@ -219,9 +226,9 @@ export const CartDrawer = () => {
                             cursor: 'pointer'
                           }}
                         >
-                          <Minus size={12} />
+                          <Minus size={11} />
                         </button>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 600, minWidth: '24px', textAlign: 'center' }}>
+                        <span style={{ fontSize: '12px', fontWeight: 700, minWidth: '22px', textAlign: 'center' }}>
                           {item.quantity}
                         </span>
                         <button
@@ -237,12 +244,12 @@ export const CartDrawer = () => {
                             cursor: 'pointer'
                           }}
                         >
-                          <Plus size={12} />
+                          <Plus size={11} />
                         </button>
                       </div>
 
                       <div style={{ textAlign: 'right' }}>
-                        <span style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--color-primary-maroon)' }}>
+                        <span style={{ fontWeight: 700, fontSize: '14px', color: 'var(--color-primary-maroon)' }}>
                           ₹{(item.price * item.quantity).toLocaleString('en-IN')}
                         </span>
                       </div>
@@ -254,19 +261,19 @@ export const CartDrawer = () => {
           )}
         </div>
 
-        {/* Drawer Footer */}
+        {/* Drawer Footer Actions */}
         {items.length > 0 && (
           <div style={{
-            padding: '20px 24px',
+            padding: '16px 20px',
             borderTop: '1px solid var(--color-border)',
-            backgroundColor: 'var(--color-warm-ivory)'
+            backgroundColor: '#FAF7F2'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '0.875rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '12px' }}>
               <span style={{ color: 'var(--color-muted-text)' }}>Subtotal:</span>
               <span style={{ fontWeight: 600 }}>₹{subtotal.toLocaleString('en-IN')}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', fontSize: '0.875rem' }}>
-              <span style={{ color: 'var(--color-muted-text)' }}>Estimated Delivery:</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '12px' }}>
+              <span style={{ color: 'var(--color-muted-text)' }}>Shipping:</span>
               <span style={{ fontWeight: 600, color: shippingFee === 0 ? 'var(--color-success)' : 'inherit' }}>
                 {shippingFee === 0 ? 'FREE' : `₹${shippingFee}`}
               </span>
@@ -274,32 +281,43 @@ export const CartDrawer = () => {
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
-              marginBottom: '18px',
-              fontSize: '1.1rem',
+              marginBottom: '14px',
+              fontSize: '15px',
               fontWeight: 700,
               borderTop: '1px dashed var(--color-border)',
-              paddingTop: '10px'
+              paddingTop: '8px'
             }}>
-              <span>Total:</span>
+              <span>Total Payable:</span>
               <span style={{ color: 'var(--color-primary-maroon)' }}>₹{total.toLocaleString('en-IN')}</span>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <button
-                onClick={() => {
-                  closeDrawer();
-                  navigate('/cart');
-                }}
-                className="btn btn-secondary"
-              >
-                View Cart
-              </button>
+            {/* Checkout & WhatsApp Order Actions */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <button
                 onClick={handleCheckout}
                 className="btn btn-primary"
+                style={{ width: '100%', minHeight: '42px', height: '42px', fontSize: '12px' }}
               >
-                Checkout <ArrowRight size={16} />
+                Proceed to Checkout <ArrowRight size={15} />
               </button>
+
+              <a
+                href={whatsappCartUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary"
+                style={{
+                  width: '100%',
+                  minHeight: '38px',
+                  height: '38px',
+                  fontSize: '11px',
+                  color: '#1E7E45',
+                  borderColor: '#1E7E45',
+                  gap: '6px'
+                }}
+              >
+                <MessageCircle size={15} color="#1E7E45" /> Order via WhatsApp (+91 {STORE_CONFIG.phone})
+              </a>
             </div>
           </div>
         )}

@@ -99,5 +99,13 @@ export const productService = {
 
   async updateStock(productId, quantity) {
     return storageService.updateStock(productId, quantity);
+  },
+
+  async saveCategory(categoryData) {
+    return storageService.saveCategory(categoryData);
+  },
+
+  async deleteCategory(categoryId) {
+    return storageService.deleteCategory(categoryId);
   }
 };

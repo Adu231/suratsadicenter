@@ -1,8 +1,9 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { ProductProvider } from './context/ProductContext.jsx';
 import { CartProvider } from './context/CartContext.jsx';
+import { WishlistProvider } from './context/WishlistContext.jsx';
 
 import { DemoNotice } from './components/DemoNotice.jsx';
 import { Navbar } from './components/Navbar.jsx';
@@ -23,35 +24,47 @@ import { AdminDashboard } from './pages/AdminDashboard.jsx';
 import { NotFound } from './pages/NotFound.jsx';
 
 export default function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   return (
     <AuthProvider>
       <ProductProvider>
-        <CartProvider>
-          <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <DemoNotice />
-            <Navbar />
+        <WishlistProvider>
+          <CartProvider>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: '100vh',
+              backgroundColor: isAdminRoute ? '#0F172A' : 'var(--color-warm-ivory)'
+            }}>
+              {/* Only render customer store chrome when NOT in admin panel */}
+              {!isAdminRoute && <DemoNotice />}
+              {!isAdminRoute && <Navbar />}
 
-            <main className="main-content">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/catalog" element={<Catalog />} />
-                <Route path="/product/:slug" element={<ProductDetails />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/order-confirmation/:orderNumber" element={<OrderConfirmation />} />
-                <Route path="/orders" element={<MyOrders />} />
-                <Route path="/admin" element={<AdminDashboard />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
+              <main className={isAdminRoute ? 'admin-main-wrapper' : 'main-content'}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/catalog" element={<Catalog />} />
+                  <Route path="/product/:slug" element={<ProductDetails />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/order-confirmation/:orderNumber" element={<OrderConfirmation />} />
+                  <Route path="/orders" element={<MyOrders />} />
+                  <Route path="/admin" element={<AdminDashboard />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
 
-            <Footer />
-            <CartDrawer />
-            <LoginModal />
-            <WhatsAppButton />
-            <MobileBottomNav />
-          </div>
-        </CartProvider>
+              {/* Only render customer store footer and floating widgets on customer routes */}
+              {!isAdminRoute && <Footer />}
+              {!isAdminRoute && <CartDrawer />}
+              {!isAdminRoute && <LoginModal />}
+              {!isAdminRoute && <WhatsAppButton />}
+              {!isAdminRoute && <MobileBottomNav />}
+            </div>
+          </CartProvider>
+        </WishlistProvider>
       </ProductProvider>
     </AuthProvider>
   );
